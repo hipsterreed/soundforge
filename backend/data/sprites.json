@@ -281,7 +281,7 @@
   },
   {
     "id": "86124c05-0d75-41bb-976e-ee855d7c6e27",
-    "name": "Warrior",
+    "name": "Garrick",
     "description": "A battle-worn warrior with broad shoulders, scarred armor, and a heavy sword strapped across his back. He carries himself with quiet confidence, his cloak torn from countless fights and his eyes always scanning the horizon for danger.",
     "imageUrl": "/audio/img-1776329437758-f7ad8ed8-b67c-41a0-9a37-3a22bfd8d7c8.png",
     "imagePath": "img-1776329437758-f7ad8ed8-b67c-41a0-9a37-3a22bfd8d7c8.png",
@@ -320,11 +320,62 @@
         "createdAt": "2026-04-16T09:36:37.655Z"
       }
     ],
-    "voiceLines": [],
+    "voiceLines": [
+      {
+        "id": "92c1b095-7c36-4bb1-af39-5ad360e37962",
+        "text": "Victory is mine!",
+        "label": "Victory",
+        "url": "/audio/24696ece-14c8-43da-a9c1-5793400b72a0-voice.mp3",
+        "tags": [
+          "voice",
+          "epic",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T09:42:49.211Z"
+      },
+      {
+        "id": "2a4d6672-3015-4bae-a3f3-640f33c251a4",
+        "text": "Ugh, not again...",
+        "label": "Hurt",
+        "url": "/audio/7c9ba71b-4291-4301-aabc-ec1f8557a28c-voice.mp3",
+        "tags": [
+          "voice",
+          "painful",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T09:42:56.333Z"
+      },
+      {
+        "id": "6eb7303f-6257-4299-b055-08bd7cb415a0",
+        "text": "For the Horde",
+        "label": "For the Horde",
+        "url": "/audio/cb53207f-f0bf-4163-ad5b-00dd9a36371a-voice.mp3",
+        "tags": [
+          "voice",
+          "aggressive",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T09:43:14.037Z"
+      },
+      {
+        "id": "f31f4584-5590-469c-8010-870fae08c983",
+        "text": "I've survived worse than this.",
+        "label": "survived",
+        "url": "/audio/d193cdbf-94ca-43bb-9313-9636fb6ef28b-voice.mp3",
+        "tags": [
+          "voice",
+          "calm",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T09:45:44.961Z"
+      }
+    ],
     "music": null,
     "createdAt": "2026-04-16T08:50:37.764Z",
     "tags": [
       "desert"
-    ]
+    ],
+    "voiceId": "OTEkWahZJTTi5HgWSE0i",
+    "voiceDescription": "Garrick's voice should be a deep, gravelly growl, like a grizzled warrior who's spent years battling on the front lines, with a texture that's as rough as the scarred armor he wears. His tone is confident and commanding, yet tempered with a hint of world-weariness, as if the weight of his experiences has etched a permanent gravity into his voice. He speaks with a slow, deliberate cadence, each word chosen carefully, like a heavy sword stroke, and his accent has a hint of a rugged, northern brogue, with a slight rasp that suggests a lifetime of shouting orders on the battlefield."
   }
 ]

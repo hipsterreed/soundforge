@@ -10,7 +10,7 @@ import { getSprite, updateSprite, deleteSprite, updateTags } from "@/lib/db";
 import { deleteImage } from "@/lib/storage";
 import {
   ArrowLeft, Pencil, Check, X, Sparkles, Loader2,
-  Mic2, Zap, Trash2,
+  Mic2, Zap, Trash2, RefreshCw,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Sprite } from "@/types";
@@ -422,6 +422,7 @@ export function SpriteDetailPage() {
   const [confirmDelete, setConfirmDelete] = useState(false);
   const [deleting, setDeleting] = useState(false);
   const [liveSpecs, setLiveSpecs] = useState<Partial<Sprite> | null>(null);
+  const [voiceDesignTrigger, setVoiceDesignTrigger] = useState(0);
 
   const load = useCallback(async () => {
     if (!id) return;
@@ -614,9 +615,17 @@ export function SpriteDetailPage() {
                     {sprite.voiceLines.length}
                   </span>
                 )}
+                {sprite.voiceId && (
+                  <button
+                    onClick={() => setVoiceDesignTrigger((n) => n + 1)}
+                    className="ml-auto flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-violet-600 transition-colors uppercase tracking-wide"
+                  >
+                    <RefreshCw className="h-2.5 w-2.5" />Change voice
+                  </button>
+                )}
               </div>
               <div className="p-5">
-                <VoiceLinesSection sprite={sprite} onUpdate={load} />
+                <VoiceLinesSection sprite={sprite} onUpdate={load} designTrigger={voiceDesignTrigger} />
               </div>
             </div>
           </div>

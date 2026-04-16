@@ -610,18 +610,19 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
       );
     }
 
-    // Use Groq to write a voice casting description
-    const groqPrompt = `You are a voice casting director for a video game.
+    // Use Groq to write a game-character voice casting description
+    const groqPrompt = `You are a voice casting director specializing in video game characters — think AAA RPGs, action games, and fantasy titles.
 
 Character name: "${sprite.name}"
 Character description: "${sprite.description || "A game character"}"
 
-Write a single concise paragraph (2-4 sentences) describing how this character should sound. Cover:
-- Age range and gender presentation
-- Voice texture (gruff, silky, raspy, bright, deep, etc.)
-- Accent or speech style if appropriate
-- Overall emotional tone and personality in the voice
+Write a single vivid paragraph (2-4 sentences) describing exactly how this character's voice should sound for ElevenLabs voice synthesis. Be specific and evocative using game voice archetypes. Cover:
+- Voice archetype fitting the character (e.g. grizzled warrior, sinister sorcerer, cocky rogue, ancient deity, feral beast, noble knight, street-smart mercenary, ethereal spirit)
+- Texture and tone (e.g. deep and gravelly, raspy and battle-worn, smooth and commanding, breathy and menacing, sharp and quick)
+- Speaking cadence and energy (e.g. slow deliberate drawl, rapid-fire wit, cold and measured, booming and theatrical)
+- Any accent, speech quirk, or otherworldly quality that fits the lore
 
+Lean into dramatic game voice acting — these voices should feel at home in a fantasy or sci-fi game cutscene.
 Return ONLY the voice description, no labels, no quotes, no extra text.`;
 
     console.log(`\n🎨 Groq voice description for "${sprite.name}"...`);
@@ -635,8 +636,8 @@ Return ONLY the voice description, no labels, no quotes, no extra text.`;
       body: JSON.stringify({
         model: "llama-3.3-70b-versatile",
         messages: [{ role: "user", content: groqPrompt }],
-        temperature: 0.85,
-        max_tokens: 150,
+        temperature: 0.9,
+        max_tokens: 200,
       }),
       signal: AbortSignal.timeout(20_000),
     });

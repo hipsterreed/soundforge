@@ -166,7 +166,7 @@ function SuggestionCard({
 }
 
 // ── Main export ───────────────────────────────────────────────────────────────
-export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpdate: () => void }) {
+export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { sprite: Sprite; onUpdate: () => void; designTrigger?: number }) {
   // Voice design
   const [designingVoice, setDesigningVoice] = useState(false);
   const [voicePreviews, setVoicePreviews] = useState<VoicePreview[] | null>(null);
@@ -188,6 +188,12 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
   useEffect(() => {
     getExistingTags().then(setExistingTags).catch(() => {});
   }, []);
+
+  // Fire design flow when parent increments the trigger
+  useEffect(() => {
+    if (designTrigger > 0) handleDesignVoice();
+  // eslint-disable-next-line react-hooks/exhaustive-deps
+  }, [designTrigger]);
 
   // Voice design: generate previews
   async function handleDesignVoice() {
@@ -404,28 +410,6 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
   // ── Voice is set: show normal generation UI ──────────────────────────────────
   return (
     <div className="space-y-6 max-w-3xl">
-
-      {/* Active voice chip */}
-      <div className="flex items-center justify-between">
-        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20">
-          <div className="h-1.5 w-1.5 rounded-full bg-violet-500" />
-          <span className="text-[11px] font-semibold text-violet-700">Custom voice active</span>
-          {sprite.voiceDescription && (
-            <span className="text-[11px] text-violet-500/70 truncate max-w-[200px]">
-              — {sprite.voiceDescription.slice(0, 50)}{sprite.voiceDescription.length > 50 ? "…" : ""}
-            </span>
-          )}
-        </div>
-        <button
-          onClick={handleDesignVoice}
-          disabled={designingVoice}
-          title="Redesign voice"
-          className="flex items-center gap-1.5 text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
-        >
-          <RefreshCw className={cn("h-3 w-3", designingVoice && "animate-spin")} />
-          Change
-        </button>
-      </div>
 
       {/* Voice redesign previews (inline, when regenerating) */}
       {voicePreviews && (
