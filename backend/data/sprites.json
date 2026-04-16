@@ -110,7 +110,7 @@
   {
     "id": "aeac4d6c-fadd-4827-a420-c4539b29c167",
     "name": "Character 8",
-    "description": "",
+    "description": "Character 8 is a soft-spoken yet fiercely determined village guardian with a talent for wielding the elements, able to summon powerful gusts of wind and bursts of flame to scorch her enemies. With her agile movements and staff imbued with ancient magic, she dances across the battlefield with a quiet confidence. A distinctive, glowing feather tucked behind her ear pulses with a gentle, ethereal light, reflecting her deep connection to the natural world.",
     "imageUrl": "/audio/img-1776329437629-ca8411fc-d346-48ac-bd78-69811472ed5c.png",
     "imagePath": "img-1776329437629-ca8411fc-d346-48ac-bd78-69811472ed5c.png",
     "frameWidth": 32,
@@ -120,15 +120,71 @@
     "totalFrames": 12,
     "scale": 2,
     "animFps": 8,
-    "audioClips": [],
-    "voiceLines": [],
+    "audioClips": [
+      {
+        "id": "310fb9d6-cd81-4d6f-9dad-7aa3b4e7612c",
+        "label": "Jump",
+        "prompt": "Character 8 — Character 8 is a soft-spoken yet fiercely determined village jumping sound: quick light whoosh, soft landing thud, 1 second",
+        "url": "/audio/de5f1528-e252-4420-9848-53031839a7f3-sfx.mp3",
+        "duration": 1,
+        "tags": [
+          "nature",
+          "calm",
+          "wood"
+        ],
+        "createdAt": "2026-04-16T10:58:23.414Z"
+      },
+      {
+        "id": "f23b42d1-42ab-48e7-8ae6-335129078b79",
+        "label": "Hurt",
+        "prompt": "Character 8 — Character 8 is a soft-spoken yet fiercely determined village hurt: damage impact hit, short pain grunt or yelp",
+        "url": "/audio/2c5665fd-dcef-404d-a48d-6b3a03f5b96d-sfx.mp3",
+        "duration": 1,
+        "tags": [
+          "voice",
+          "pain",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T10:58:26.237Z"
+      },
+      {
+        "id": "514f2858-3d0e-4485-a92e-21688a4be8f3",
+        "label": "Attack",
+        "prompt": "Character 8 — Character 8 is a soft-spoken yet fiercely determined village attack: sharp melee strike, weapon impact, aggressive crack",
+        "url": "/audio/3098f782-7bb3-4b09-9caa-f03320b42e39-sfx.mp3",
+        "duration": 1,
+        "tags": [
+          "melee",
+          "aggressive",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T10:58:30.436Z"
+      }
+    ],
+    "voiceLines": [
+      {
+        "id": "3fa1f86c-6806-4068-b3e0-726bec47383c",
+        "text": "Balance restored",
+        "label": "Victory",
+        "url": "/audio/179a186f-5868-47ea-8893-dbf9f0614bf8-voice.mp3",
+        "tags": [
+          "magic",
+          "calm",
+          "nature"
+        ],
+        "createdAt": "2026-04-16T10:58:09.244Z"
+      }
+    ],
     "music": null,
-    "createdAt": "2026-04-16T08:50:37.634Z"
+    "createdAt": "2026-04-16T08:50:37.634Z",
+    "tags": [],
+    "voiceId": "HEECtQ130eMt8UupCEuM",
+    "voiceDescription": "Character 8's voice is that of an ethereal spirit, with a soft and melodic texture that belies a deep well of inner strength, her words unfolding with a slow and measured cadence that conveys a sense of quiet confidence and ancient wisdom. Her tone is smooth and hypnotic, with a subtle huskiness that hints at a connection to the natural world, and a gentle lilt that suggests a mystical or otherworldly heritage. As she speaks, her voice weaves a spell of calm determination, with a subtle rhythmic pulse that echoes the gentle glow of the feather tucked behind her ear, and a hint of a mystical accent that whispers of forgotten lore and ancient magic. Her speech is infused with a dreamy, far-off quality, as if she's always listening to the whispers of the wind and the pulse of the earth beneath her feet."
   },
   {
     "id": "d570f62d-2aa9-4e66-bdf8-a7c2b46cc879",
     "name": "Character 9",
-    "description": "",
+    "description": "Character 9 is a brooding, hot-headed smuggler with a penchant for getting out of tight spots, using their quick reflexes and mastery of a pair of razor-sharp, glowing tonfa to take down enemies in the gritty, high-tech underworld of Neo-Eden. With a distinctive, pulsing tattoo of a snake coiled around their right bicep, they navigate the city's hidden corners and back alleys with ease, always staying one step ahead of their rivals. Their low, gravelly voice and sharp tongue can talk their way past most obstacles, but when words fail, their tonfa glow bright blue as they unleash a flurry of deadly, acrobatic strikes.",
     "imageUrl": "/audio/img-1776329437650-df0b6b20-8612-49e8-81e9-ed6fd5d47d8d.png",
     "imagePath": "img-1776329437650-df0b6b20-8612-49e8-81e9-ed6fd5d47d8d.png",
     "frameWidth": 32,
@@ -138,10 +194,66 @@
     "totalFrames": 12,
     "scale": 2,
     "animFps": 8,
-    "audioClips": [],
-    "voiceLines": [],
+    "audioClips": [
+      {
+        "id": "1f24cb6e-5907-4256-9ef8-e6dccd8567f2",
+        "label": "Jump",
+        "prompt": "Character 9 — Character 9 is a brooding, hot-headed smuggler with a pencha jumping sound: quick light whoosh, soft landing thud, 1 second",
+        "url": "/audio/0f875d45-fe9f-4c47-9de8-7809cbfc74ca-sfx.mp3",
+        "duration": 1,
+        "tags": [
+          "melee",
+          "aggressive",
+          "urban"
+        ],
+        "createdAt": "2026-04-16T10:34:44.266Z"
+      },
+      {
+        "id": "5e57cefd-46bb-4c33-9e3f-447a4454851e",
+        "label": "Hurt",
+        "prompt": "Character 9 — Character 9 is a brooding, hot-headed smuggler with a pencha hurt: damage impact hit, short pain grunt or yelp",
+        "url": "/audio/b703189d-16f6-4026-b0ad-c8d64f581597-sfx.mp3",
+        "duration": 1,
+        "tags": [
+          "voice",
+          "pain",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T10:34:47.137Z"
+      }
+    ],
+    "voiceLines": [
+      {
+        "id": "6ba59de8-63c2-4a36-8e4d-bc664fb3cefa",
+        "text": "You're done.",
+        "label": "Victory",
+        "url": "/audio/bb04c8a5-8aad-4361-8a5f-181693cc4fa1-voice.mp3",
+        "tags": [
+          "voice",
+          "calm",
+          "victory"
+        ],
+        "createdAt": "2026-04-16T10:34:28.024Z"
+      },
+      {
+        "id": "99fdf1e1-a949-4b97-9fae-9f122938c1a9",
+        "text": "Burn it down!",
+        "label": "Battle Cry",
+        "url": "/audio/dbbfaa93-25cb-4a3d-a20f-82a9ed022615-voice.mp3",
+        "tags": [
+          "voice",
+          "aggressive",
+          "urban",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T10:51:06.210Z"
+      }
+    ],
     "music": null,
-    "createdAt": "2026-04-16T08:50:37.655Z"
+    "createdAt": "2026-04-16T08:50:37.655Z",
+    "tags": [],
+    "voiceId": "6zP8JUQpKeSTlNvjI4S8",
+    "voiceDescription": "Character 9's voice is that of a street-smart mercenary, with a low, gravelly texture that suggests a lifetime of smoke-filled backrooms and high-stakes deal-making, their tone a perfect balance of cocky swagger and brooding intensity. Their speaking cadence is rapid-fire and sharp, with a tendency to clip their words and spit them out like a challenge, as if daring the world to get in their way. A hint of a rough, urban accent - perhaps a fusion of Eastern European and cyberpunk-inflected slang - adds a layer of grit and authenticity to their voice, while a subtle, menacing undertone suggests that they're always coiled and ready to strike, like the snake tattoo that wraps around their bicep. Their words are laced with a feral energy, as if they're always sizing up the room and looking for the next angle, the next score, or the next fight."
   },
   {
     "id": "5d4535a7-673e-44ee-aa35-2c64b19eb539",
@@ -277,7 +389,9 @@
     "createdAt": "2026-04-16T08:50:37.746Z",
     "tags": [
       "enemy"
-    ]
+    ],
+    "voiceId": "pjsvWcUnrdECYfDyQL9u",
+    "voiceDescription": "Ghoul's voice is that of a wise and weathered elder statesperson, akin to a mystical druid or a venerable sage, with a warm, raspy quality that evokes the soft rustling of leaves and the gentle lapping of waves. The tone is low and soothing, with a depth that suggests a lifetime of experience and a calm, measured authority, like a slow-burning fire on a winter's night. Their words are spoken in a slow, deliberate cadence, as if each phrase is being carefully considered and infused with the weight of ancient wisdom, with a hint of a mystical, otherworldly accent that whispers of forgotten lore and mystical realms. The overall effect is one of gentle, earthy wisdom, like a summer breeze carrying the scent of wildflowers and damp earth, with a subtle, soothing melody that seems to underscore every sentence, as if the wind chimes on their staff are singing in harmony with their voice."
   },
   {
     "id": "86124c05-0d75-41bb-976e-ee855d7c6e27",

@@ -11,6 +11,12 @@
         "url": "/audio/df8d3e38-1e2c-48a4-9160-93d1c8678174-music.mp3",
         "prompt": "Background music for a video game map called Forest Level. A peaceful coastal village surrounded by forests, farms, rivers, and sandy beaches, with docks full of fishing boats and winding paths connecting homes, markets, and hidden spots. The map feels cozy and adventurous, with caves in the hills, small islands, campfires, and plenty of places to explore.",
         "createdAt": "2026-04-16T09:46:20.034Z"
+      },
+      {
+        "id": "5b6d2d18-fca7-4cf5-80b8-52e15829ec6c",
+        "url": "/audio/e9dd81a3-159a-46b6-b0f1-4e1d76ff5358-music.mp3",
+        "prompt": "Background music for a video game map called Forest Level. A peaceful coastal village surrounded by forests, farms, rivers, and sandy beaches, with docks full of fishing boats and winding paths connecting homes, markets, and hidden spots. The map feels cozy and adventurous, with caves in the hills, small islands, campfires, and plenty of places to explore.",
+        "createdAt": "2026-04-16T10:35:59.464Z"
       }
     ],
     "createdAt": "2026-04-16T08:23:19.306Z",
@@ -26,7 +32,14 @@
     "description": "This sun-drenched biome features a vast expanse of golden sand dotted with hardy cacti and weathered rock formations. A central oasis provides a lush sanctuary of palm trees and vibrant greenery, offering a sharp contrast to the surrounding arid terrain. Along the southern edge, a winding river sustains a line of dense foliage, marking the transition from the dry desert to a fertile riverbank.",
     "imageUrl": "/audio/img-1776327981468-b8687c94-bcf1-4111-91b8-fb7ca50430a5.png",
     "imagePath": "img-1776327981468-b8687c94-bcf1-4111-91b8-fb7ca50430a5.png",
-    "tracks": [],
+    "tracks": [
+      {
+        "id": "1a24f5ff-e189-4189-a58c-acb210b42b0c",
+        "url": "/audio/a2e91cb0-a34b-41d0-bc05-91dd332662be-music.mp3",
+        "prompt": "Background music for a video game map called Desert Map. This sun-drenched biome features a vast expanse of golden sand dotted with hardy cacti and weathered rock formations. A central oasis provides a lush sanctuary of palm trees and vibrant greenery, offering a sharp contrast to the surrounding arid terrain. Along the southern edge, a winding river sustains a line of dense foliage, marking the transition from the dry desert to a fertile riverbank.",
+        "createdAt": "2026-04-16T10:59:37.447Z"
+      }
+    ],
     "createdAt": "2026-04-16T08:26:21.477Z",
     "tags": [
       "desert"

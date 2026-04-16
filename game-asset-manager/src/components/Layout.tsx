@@ -1,6 +1,7 @@
 import { NavLink, Outlet } from "react-router-dom";
-import { Users, Map, Gamepad2, GitBranch } from "lucide-react";
+import { Users, Map, GitBranch } from "lucide-react";
 import { cn } from "@/lib/utils";
+import soundforgeLogo from "@/assets/soundforge.png";
 
 const navItems = [
   { to: "/sprites", icon: Users, label: "Characters" },
@@ -14,10 +15,8 @@ export function Layout() {
       {/* Sidebar */}
       <aside className="w-52 border-r border-border flex flex-col shrink-0 bg-background">
         <div className="h-14 flex items-center gap-3 px-4 border-b border-border">
-          <div className="h-7 w-7 rounded-lg bg-primary/10 border border-primary/20 flex items-center justify-center">
-            <Gamepad2 className="h-3.5 w-3.5 text-primary" />
-          </div>
-          <span className="font-bold text-sm text-foreground tracking-tight">Game Builder</span>
+          <img src={soundforgeLogo} alt="SoundForge" className="h-7 w-7 object-contain shrink-0" />
+          <span className="font-bold text-sm text-foreground tracking-tight">SoundForge</span>
         </div>
 
         <nav className="flex-1 p-3 space-y-0.5">
