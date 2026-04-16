@@ -42,7 +42,6 @@ export function SpriteSheetViewer({ sprite, autoPlay = false }: SpriteSheetViewe
     setAnimStep(previewStep);
     setPlaying(autoPlay);
     const img = new Image();
-    img.crossOrigin = "anonymous";
     img.src = imageUrl;
     img.onload = () => { imgRef.current = img; setLoaded(true); };
   // eslint-disable-next-line react-hooks/exhaustive-deps

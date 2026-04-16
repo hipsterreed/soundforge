@@ -42,7 +42,6 @@ export function SpriteCardPreview({ sprite }: Props) {
     setLoaded(false);
     animStepRef.current = previewStep;
     const img = new Image();
-    img.crossOrigin = "anonymous";
     img.src = imageUrl;
     img.onload = () => { imgRef.current = img; setLoaded(true); };
   // eslint-disable-next-line react-hooks/exhaustive-deps
