@@ -57,11 +57,17 @@ export interface Sprite {
   totalFrames: number;
   scale: number;
   animFps: number;
+  animStartCol?: number;
+  animEndCol?: number;
+  previewCol?: number;
+  previewRow?: number;
   audioClips: AudioClip[];
   voiceLines: VoiceLine[];
   music: MapMusic | null;
   tags: string[];
   createdAt: string;
+  voiceId?: string;
+  voiceDescription?: string;
 }
 
 export interface MapMusic {

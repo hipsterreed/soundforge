@@ -199,8 +199,8 @@
   },
   {
     "id": "35ba5faa-1395-45bc-8046-287e52ee05dc",
-    "name": "Character 13",
-    "description": "Character 13 is a brooding, hot-headed vigilante who patrols the neon-drenched streets of the game's cyberpunk metropolis, wielding a pair of razor-sharp tonfa that crackle with electricity as they strike. With a talent for hand-to-hand combat and martial arts, they take down corrupt corporations and underground gangs with a fierce determination. A distinctive, pulsing circuit board tattoo on their left cheek seems to glow in rhythm with their electrified tonfa, as if fueling their unyielding pursuit of justice.",
+    "name": "Goblin",
+    "description": "A scrappy little goblin with oversized ears, sharp yellow eyes, and a crooked grin that always looks like he knows where the good loot is hidden. He moves with twitchy, chaotic energy, covered in mismatched leather scraps, jangling trinkets, and just enough dirt to suggest he feels very at home in the mess.",
     "imageUrl": "/audio/img-1776329437724-d26dbf4f-9839-4a04-a59d-bfce7681daa0.png",
     "imagePath": "img-1776329437724-d26dbf4f-9839-4a04-a59d-bfce7681daa0.png",
     "frameWidth": 32,
@@ -260,7 +260,7 @@
   },
   {
     "id": "7ae85c3a-b3c2-478b-be3c-be4e3667f8a7",
-    "name": "Character 14",
+    "name": "Ghoul",
     "description": "Character 14 is a soft-spoken yet fiercely determined village elder who wields the elements with graceful, flowing movements, summoning whirlwinds and geysers to disorient foes. With a warm, raspy voice and a distinctive staff adorned with tiny, shimmering wind chimes, they bring a sense of gentle authority to the battlefield. Their long, silver hair is always tied back in a loose, wispy bun, and their eyes twinkle with a deep, earthy wisdom.",
     "imageUrl": "/audio/img-1776329437740-3778d1bf-4bd4-4cab-8f2f-8befdc9bf834.png",
     "imagePath": "img-1776329437740-3778d1bf-4bd4-4cab-8f2f-8befdc9bf834.png",
@@ -281,8 +281,8 @@
   },
   {
     "id": "86124c05-0d75-41bb-976e-ee855d7c6e27",
-    "name": "Character 15",
-    "description": "Character 15 is a soft-spoken yet fiercely determined village elder who wields the elements with gentle, sweeping motions, summoning whirlwinds and geysers to disorient foes. With a wise, knowing glint in her eye, she patrols the mystical forests, ever vigilant for threats to the ancient balance. A delicate, glowing vine tattoo wraps around her right wrist, pulsing in harmony with the natural world.",
+    "name": "Warrior",
+    "description": "A battle-worn warrior with broad shoulders, scarred armor, and a heavy sword strapped across his back. He carries himself with quiet confidence, his cloak torn from countless fights and his eyes always scanning the horizon for danger.",
     "imageUrl": "/audio/img-1776329437758-f7ad8ed8-b67c-41a0-9a37-3a22bfd8d7c8.png",
     "imagePath": "img-1776329437758-f7ad8ed8-b67c-41a0-9a37-3a22bfd8d7c8.png",
     "frameWidth": 32,
@@ -292,7 +292,34 @@
     "totalFrames": 12,
     "scale": 2,
     "animFps": 8,
-    "audioClips": [],
+    "audioClips": [
+      {
+        "id": "5f398cea-8701-4283-8cae-7dab229f2108",
+        "label": "Hurt",
+        "prompt": "Warrior — Character 15 is a soft-spoken yet fiercely determined villag hurt: damage impact hit, short pain grunt or yelp",
+        "url": "/audio/dafed673-3c69-4002-80b3-5a5404ab90d4-sfx.mp3",
+        "duration": 1,
+        "tags": [
+          "voice",
+          "pain",
+          "combat"
+        ],
+        "createdAt": "2026-04-16T09:35:41.013Z"
+      },
+      {
+        "id": "fcc6c15b-4f5c-47f7-ba33-98d033b7c18b",
+        "label": "Battle cry",
+        "prompt": "A strong battle cry",
+        "url": "/audio/720e4841-8b7e-4486-96d6-d348392951b2-sfx.mp3",
+        "duration": 2,
+        "tags": [
+          "voice",
+          "epic",
+          "magic"
+        ],
+        "createdAt": "2026-04-16T09:36:37.655Z"
+      }
+    ],
     "voiceLines": [],
     "music": null,
     "createdAt": "2026-04-16T08:50:37.764Z",

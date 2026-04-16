@@ -2,11 +2,23 @@
   {
     "id": "353bf989-cf92-474c-a6ab-06a82c7daa35",
     "name": "Forest Level",
-    "description": "",
+    "description": "A peaceful coastal village surrounded by forests, farms, rivers, and sandy beaches, with docks full of fishing boats and winding paths connecting homes, markets, and hidden spots. The map feels cozy and adventurous, with caves in the hills, small islands, campfires, and plenty of places to explore.",
     "imageUrl": "/audio/img-1776327799295-45ba765a-8f24-42c7-8c9a-f2c9640d9ab7.png",
     "imagePath": "img-1776327799295-45ba765a-8f24-42c7-8c9a-f2c9640d9ab7.png",
-    "tracks": [],
-    "createdAt": "2026-04-16T08:23:19.306Z"
+    "tracks": [
+      {
+        "id": "40c71fcd-c234-4748-8835-3a0d35c0ad37",
+        "url": "/audio/6bc0816f-e968-4afa-8cb3-9d14b2aad853-music.mp3",
+        "prompt": "Background music for a video game map called Forest Level. A peaceful coastal village surrounded by forests, farms, rivers, and sandy beaches, with docks full of fishing boats and winding paths connecting homes, markets, and hidden spots. The map feels cozy and adventurous, with caves in the hills, small islands, campfires, and plenty of places to explore.",
+        "createdAt": "2026-04-16T09:34:24.082Z"
+      }
+    ],
+    "createdAt": "2026-04-16T08:23:19.306Z",
+    "tags": [
+      "forrest",
+      "village",
+      "ocean"
+    ]
   },
   {
     "id": "151011fd-be10-4a93-83d0-7faa7684ba8d",

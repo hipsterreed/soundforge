@@ -82,9 +82,8 @@ interface MusicManagerProps {
 export function MusicManager({ map, onUpdate }: MusicManagerProps) {
   const [showForm, setShowForm] = useState(false);
   const [prompt, setPrompt] = useState(
-    `Background music for ${map.name}. ${map.description}`.trim()
+    `Background music for a video game map called ${map.name}. ${map.description}`.trim().slice(0, 900)
   );
-  const [duration, setDuration] = useState(60);
   const [generating, setGenerating] = useState(false);
   const [error, setError] = useState<string | null>(null);
 
@@ -96,7 +95,7 @@ export function MusicManager({ map, onUpdate }: MusicManagerProps) {
       const res = await fetch("/api/game/music", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ prompt, durationSeconds: duration }),
+        body: JSON.stringify({ prompt }),
       });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as Record<string, string>;
@@ -179,21 +178,9 @@ export function MusicManager({ map, onUpdate }: MusicManagerProps) {
           <div className="space-y-1.5">
             <Label>Music description</Label>
             <Input
-              placeholder="e.g. Epic orchestral fantasy battle music, intense and heroic"
+              placeholder="e.g. Epic orchestral background music for a fantasy battle game map, intense and heroic"
               value={prompt}
               onChange={(e) => setPrompt(e.target.value)}
-            />
-          </div>
-          <div className="space-y-1.5">
-            <Label>Duration: {duration}s</Label>
-            <input
-              type="range"
-              min={15}
-              max={120}
-              step={15}
-              value={duration}
-              onChange={(e) => setDuration(Number(e.target.value))}
-              className="w-full accent-primary"
             />
           </div>
           {error && <p className="text-sm text-destructive">{error}</p>}
@@ -204,7 +191,7 @@ export function MusicManager({ map, onUpdate }: MusicManagerProps) {
             className="w-full"
           >
             {generating
-              ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Generating {duration}s…</>
+              ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Generating…</>
               : <><Music className="h-4 w-4 mr-2" />Generate Track</>}
           </Button>
         </div>

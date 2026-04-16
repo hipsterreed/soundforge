@@ -2,7 +2,7 @@ import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { addVoiceLine, deleteVoiceLine, getExistingTags, suggestTags } from "@/lib/db";
 import {
-  Mic2, Play, Pause, Trash2, Sparkles, Loader2, Plus, X,
+  Mic2, Play, Pause, Trash2, Sparkles, Loader2, Plus, X, Wand2, Check, RefreshCw,
 } from "lucide-react";
 import type { Sprite, VoiceLine } from "@/types";
 import { toast } from "sonner";
@@ -11,6 +11,13 @@ import { cn } from "@/lib/utils";
 interface AISuggestion {
   label: string;
   text: string;
+}
+
+interface VoicePreview {
+  audio_base_64: string;
+  generated_voice_id: string;
+  media_type: string;
+  duration_secs: number;
 }
 
 // ── Voice line row ────────────────────────────────────────────────────────────
@@ -51,7 +58,6 @@ function VoiceLineRow({ line, onDelete }: { line: VoiceLine; onDelete: () => voi
           <Trash2 className="h-3.5 w-3.5" />
         </button>
       </div>
-      {/* Tags — read-only chips */}
       {(line.tags ?? []).length > 0 && (
         <div className="pl-11 flex flex-wrap gap-1">
           {(line.tags ?? []).map((tag) => (
@@ -64,6 +70,65 @@ function VoiceLineRow({ line, onDelete }: { line: VoiceLine; onDelete: () => voi
           ))}
         </div>
       )}
+    </div>
+  );
+}
+
+// ── Voice preview card ────────────────────────────────────────────────────────
+function VoicePreviewCard({
+  preview,
+  index,
+  onSelect,
+  saving,
+}: {
+  preview: VoicePreview;
+  index: number;
+  onSelect: (p: VoicePreview) => void;
+  saving: boolean;
+}) {
+  const audioRef = useRef<HTMLAudioElement>(null);
+  const [playing, setPlaying] = useState(false);
+
+  // Decode base64 to blob URL once
+  const [blobUrl] = useState(() => {
+    const bytes = Uint8Array.from(atob(preview.audio_base_64), (c) => c.charCodeAt(0));
+    const blob = new Blob([bytes], { type: preview.media_type || "audio/mpeg" });
+    return URL.createObjectURL(blob);
+  });
+
+  function toggle() {
+    const a = audioRef.current;
+    if (!a) return;
+    if (playing) { a.pause(); setPlaying(false); }
+    else { a.play().then(() => setPlaying(true)).catch(() => {}); }
+  }
+
+  return (
+    <div className="flex items-center gap-3 px-3 py-2.5 rounded-xl border border-border bg-muted/20 hover:bg-muted/30 transition-all">
+      <audio ref={audioRef} src={blobUrl} onEnded={() => setPlaying(false)} />
+      <button
+        onClick={toggle}
+        className={cn(
+          "h-8 w-8 rounded-lg flex items-center justify-center shrink-0 transition-all",
+          playing
+            ? "bg-violet-500 text-white"
+            : "bg-violet-500/10 border border-violet-500/20 text-violet-600 hover:bg-violet-500/20"
+        )}
+      >
+        {playing ? <Pause className="h-3.5 w-3.5" /> : <Play className="h-3.5 w-3.5 ml-px" />}
+      </button>
+      <div className="flex-1 min-w-0">
+        <span className="text-xs font-semibold text-foreground/60">Voice {index + 1}</span>
+        <span className="text-[11px] text-muted-foreground/50 tabular-nums ml-2">{preview.duration_secs.toFixed(1)}s</span>
+      </div>
+      <button
+        onClick={() => onSelect(preview)}
+        disabled={saving}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 hover:border-violet-500/30 text-violet-700 text-xs font-semibold transition-all disabled:opacity-40 shrink-0"
+      >
+        {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+        {saving ? "Saving…" : "Use this voice"}
+      </button>
     </div>
   );
 }
@@ -102,6 +167,14 @@ function SuggestionCard({
 
 // ── Main export ───────────────────────────────────────────────────────────────
 export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpdate: () => void }) {
+  // Voice design
+  const [designingVoice, setDesigningVoice] = useState(false);
+  const [voicePreviews, setVoicePreviews] = useState<VoicePreview[] | null>(null);
+  const [pendingVoiceDescription, setPendingVoiceDescription] = useState<string>("");
+  const [savingVoiceId, setSavingVoiceId] = useState<string | null>(null);
+  const [voiceDesignError, setVoiceDesignError] = useState<string | null>(null);
+
+  // Suggestions + generation
   const [suggestions, setSuggestions] = useState<AISuggestion[] | null>(null);
   const [loadingSuggestions, setLoadingSuggestions] = useState(false);
   const [generatingLabel, setGeneratingLabel] = useState<string | null>(null);
@@ -115,6 +188,53 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
   useEffect(() => {
     getExistingTags().then(setExistingTags).catch(() => {});
   }, []);
+
+  // Voice design: generate previews
+  async function handleDesignVoice() {
+    setDesigningVoice(true);
+    setVoicePreviews(null);
+    setVoiceDesignError(null);
+    try {
+      const res = await fetch(`/api/game/sprites/${sprite.id}/design-voice`, { method: "POST" });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(b.error ?? `Error ${res.status}`);
+      }
+      const data = await res.json() as { previews: VoicePreview[]; voiceDescription: string; sampleText: string };
+      setVoicePreviews(data.previews);
+      setPendingVoiceDescription(data.voiceDescription);
+    } catch (err: unknown) {
+      setVoiceDesignError(err instanceof Error ? err.message : "Failed to design voice");
+    } finally {
+      setDesigningVoice(false);
+    }
+  }
+
+  // Voice design: save a selected preview
+  async function handleSelectVoice(preview: VoicePreview) {
+    setSavingVoiceId(preview.generated_voice_id);
+    try {
+      const res = await fetch(`/api/game/sprites/${sprite.id}/save-voice`, {
+        method: "POST",
+        headers: { "Content-Type": "application/json" },
+        body: JSON.stringify({
+          generatedVoiceId: preview.generated_voice_id,
+          voiceDescription: pendingVoiceDescription,
+        }),
+      });
+      if (!res.ok) {
+        const b = await res.json().catch(() => ({})) as { error?: string };
+        throw new Error(b.error ?? `Error ${res.status}`);
+      }
+      toast.success("Character voice saved!");
+      setVoicePreviews(null);
+      onUpdate();
+    } catch (err: unknown) {
+      toast.error(err instanceof Error ? err.message : "Failed to save voice");
+    } finally {
+      setSavingVoiceId(null);
+    }
+  }
 
   async function fetchSuggestions() {
     setLoadingSuggestions(true);
@@ -143,17 +263,14 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
       const res = await fetch("/api/game/voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: s.text }),
+        body: JSON.stringify({ text: s.text, voiceId: sprite.voiceId }),
       });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(b.error ?? `Error ${res.status}`);
       }
       const { url } = await res.json() as { url: string };
-
-      // Auto-tag
       const tags = await suggestTags(s.label, s.text, sprite.name, sprite.description).catch(() => []);
-
       await addVoiceLine(sprite.id, { text: s.text, label: s.label, url, tags });
       toast.success(`"${s.label}" generated`);
       getExistingTags().then(setExistingTags).catch(() => {});
@@ -173,17 +290,14 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
       const res = await fetch("/api/game/voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ text: manualText.trim() }),
+        body: JSON.stringify({ text: manualText.trim(), voiceId: sprite.voiceId }),
       });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(b.error ?? `Error ${res.status}`);
       }
       const { url } = await res.json() as { url: string };
-
-      // Auto-tag
       const tags = await suggestTags(manualLabel.trim(), manualText.trim(), sprite.name, sprite.description).catch(() => []);
-
       await addVoiceLine(sprite.id, { text: manualText.trim(), label: manualLabel.trim(), url, tags });
       toast.success(`"${manualLabel}" generated`);
       setManualLabel(""); setManualText(""); setShowManual(false);
@@ -204,12 +318,151 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
 
   const hasDescription = !!sprite.description;
   const hasLines = sprite.voiceLines.length > 0;
-
-  // Suppress unused warning — existingTags loaded for future use / consistency
+  const hasVoice = !!sprite.voiceId;
   void existingTags;
 
+  // ── No voice set yet: show voice design as the primary flow ─────────────────
+  if (!hasVoice) {
+    return (
+      <div className="space-y-4 max-w-3xl">
+        {/* Designing / previews in progress */}
+        {(designingVoice || voicePreviews) ? (
+          <div className="space-y-4">
+            {designingVoice && (
+              <div className="flex flex-col items-center justify-center py-16 text-center gap-3">
+                <Loader2 className="h-8 w-8 animate-spin text-violet-400" />
+                <p className="text-sm font-semibold text-foreground/50">Designing voice…</p>
+                <p className="text-xs text-muted-foreground max-w-xs">
+                  Reading {sprite.name}&apos;s description and crafting a matching voice
+                </p>
+              </div>
+            )}
+
+            {voicePreviews && (
+              <div className="space-y-4">
+                <div>
+                  <p className="text-sm font-semibold text-foreground/80 mb-1">Pick a voice for {sprite.name}</p>
+                  {pendingVoiceDescription && (
+                    <p className="text-xs text-muted-foreground leading-relaxed italic">
+                      &ldquo;{pendingVoiceDescription}&rdquo;
+                    </p>
+                  )}
+                </div>
+                <div className="flex flex-col gap-2">
+                  {voicePreviews.map((p, i) => (
+                    <VoicePreviewCard
+                      key={p.generated_voice_id}
+                      preview={p}
+                      index={i}
+                      onSelect={handleSelectVoice}
+                      saving={savingVoiceId === p.generated_voice_id}
+                    />
+                  ))}
+                </div>
+                <button
+                  onClick={handleDesignVoice}
+                  disabled={designingVoice}
+                  className="flex items-center gap-1.5 text-xs text-muted-foreground hover:text-foreground transition-colors"
+                >
+                  <RefreshCw className="h-3 w-3" />
+                  Generate different options
+                </button>
+              </div>
+            )}
+          </div>
+        ) : (
+          /* Empty state — voice design CTA */
+          <div className="flex flex-col items-center justify-center py-16 text-center">
+            <div className="h-16 w-16 rounded-2xl bg-violet-50 border border-violet-100 flex items-center justify-center mb-5">
+              <Wand2 className="h-8 w-8 text-violet-400" />
+            </div>
+            <p className="text-sm font-semibold text-foreground/70 mb-1">Design a character voice first</p>
+            <p className="text-xs text-muted-foreground max-w-xs leading-relaxed mb-5">
+              {hasDescription
+                ? `We'll read ${sprite.name}'s description and generate a unique voice that matches their personality.`
+                : "Add a character description first so we can match the voice to their personality."}
+            </p>
+            {voiceDesignError && (
+              <div className="mb-4 rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600 max-w-xs">
+                {voiceDesignError}
+              </div>
+            )}
+            <button
+              onClick={handleDesignVoice}
+              disabled={!hasDescription}
+              className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
+            >
+              <Wand2 className="h-4 w-4" />
+              Design Character Voice
+            </button>
+          </div>
+        )}
+      </div>
+    );
+  }
+
+  // ── Voice is set: show normal generation UI ──────────────────────────────────
   return (
     <div className="space-y-6 max-w-3xl">
+
+      {/* Active voice chip */}
+      <div className="flex items-center justify-between">
+        <div className="flex items-center gap-2 px-3 py-1.5 rounded-full bg-violet-500/10 border border-violet-500/20">
+          <div className="h-1.5 w-1.5 rounded-full bg-violet-500" />
+          <span className="text-[11px] font-semibold text-violet-700">Custom voice active</span>
+          {sprite.voiceDescription && (
+            <span className="text-[11px] text-violet-500/70 truncate max-w-[200px]">
+              — {sprite.voiceDescription.slice(0, 50)}{sprite.voiceDescription.length > 50 ? "…" : ""}
+            </span>
+          )}
+        </div>
+        <button
+          onClick={handleDesignVoice}
+          disabled={designingVoice}
+          title="Redesign voice"
+          className="flex items-center gap-1.5 text-[11px] text-muted-foreground/50 hover:text-muted-foreground transition-colors"
+        >
+          <RefreshCw className={cn("h-3 w-3", designingVoice && "animate-spin")} />
+          Change
+        </button>
+      </div>
+
+      {/* Voice redesign previews (inline, when regenerating) */}
+      {voicePreviews && (
+        <div className="rounded-xl border border-violet-200 bg-violet-50/50 p-4 space-y-3">
+          <div className="flex items-center justify-between">
+            <p className="text-[10px] font-semibold text-violet-600/70 uppercase tracking-wider">
+              Pick a new voice
+            </p>
+            <button onClick={() => setVoicePreviews(null)} className="text-muted-foreground/40 hover:text-muted-foreground transition-colors">
+              <X className="h-3.5 w-3.5" />
+            </button>
+          </div>
+          {pendingVoiceDescription && (
+            <p className="text-[11px] text-muted-foreground italic leading-relaxed">
+              &ldquo;{pendingVoiceDescription}&rdquo;
+            </p>
+          )}
+          <div className="flex flex-col gap-2">
+            {voicePreviews.map((p, i) => (
+              <VoicePreviewCard
+                key={p.generated_voice_id}
+                preview={p}
+                index={i}
+                onSelect={handleSelectVoice}
+                saving={savingVoiceId === p.generated_voice_id}
+              />
+            ))}
+          </div>
+        </div>
+      )}
+
+      {voiceDesignError && (
+        <div className="rounded-lg border border-red-200 bg-red-50 px-3 py-2 text-xs text-red-600">
+          {voiceDesignError}
+        </div>
+      )}
+
       {/* Actions bar */}
       <div className="flex items-center gap-3">
         <button
@@ -326,17 +579,15 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
         </div>
       )}
 
-      {/* Empty state */}
+      {/* Empty state (voice set but no lines yet) */}
       {!hasLines && !suggestions && !showManual && (
-        <div className="flex flex-col items-center justify-center py-16 text-center">
+        <div className="flex flex-col items-center justify-center py-12 text-center">
           <div className="h-14 w-14 rounded-2xl bg-emerald-50 border border-emerald-100 flex items-center justify-center mb-4">
             <Mic2 className="h-7 w-7 text-emerald-400" />
           </div>
           <p className="text-sm font-semibold text-foreground/50 mb-1">No voice lines yet</p>
           <p className="text-xs text-muted-foreground max-w-xs leading-relaxed">
-            {hasDescription
-              ? "Use AI Suggest to generate ideas, or write a custom line above."
-              : "Add a description in the inspector to unlock AI suggestions."}
+            Use AI Suggest to generate ideas, or write a custom line above.
           </p>
         </div>
       )}

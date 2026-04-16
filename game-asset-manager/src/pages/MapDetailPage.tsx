@@ -7,8 +7,7 @@ import { Separator } from "@/components/ui/separator";
 import { Label } from "@/components/ui/label";
 import { MusicManager } from "@/components/maps/MusicManager";
 import { TagInput } from "@/components/TagInput";
-import { getMap, updateMap, deleteMap, updateTags, getRelated } from "@/lib/db";
-import type { RelatedAsset } from "@/lib/db";
+import { getMap, updateMap, deleteMap, updateTags } from "@/lib/db";
 import { deleteImage } from "@/lib/storage";
 import { ArrowLeft, Loader2, Trash2 } from "lucide-react";
 import { toast } from "sonner";
@@ -127,90 +126,6 @@ function MapTagsPanel({ map, onSaved }: { map: GameMap; onSaved: () => void }) {
   );
 }
 
-// ── Related assets section ────────────────────────────────────────────────────
-function RelatedAssetsSection({ map }: { map: GameMap }) {
-  const navigate = useNavigate();
-  const [related, setRelated] = useState<RelatedAsset[]>([]);
-  const [loading, setLoading] = useState(true);
-
-  useEffect(() => {
-    let cancelled = false;
-    setLoading(true);
-    getRelated(map.id, "map")
-      .then((r) => { if (!cancelled) setRelated(r); })
-      .catch(() => {})
-      .finally(() => { if (!cancelled) setLoading(false); });
-    return () => { cancelled = true; };
-  }, [map.id]);
-
-  if (loading) {
-    return (
-      <div className="rounded-xl border bg-card p-5 space-y-3">
-        <h3 className="text-sm font-medium text-foreground">Related Assets</h3>
-        <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-          {[1, 2, 3].map((i) => <Skeleton key={i} className="h-16 rounded-lg" />)}
-        </div>
-      </div>
-    );
-  }
-
-  if (related.length === 0) {
-    return (
-      <div className="rounded-xl border bg-card p-5">
-        <h3 className="text-sm font-medium text-foreground mb-2">Related Assets</h3>
-        <p className="text-xs text-muted-foreground/60">
-          No related assets found. Add tags and index assets to see semantic matches here.
-        </p>
-      </div>
-    );
-  }
-
-  return (
-    <div className="rounded-xl border bg-card p-5 space-y-3">
-      <h3 className="text-sm font-medium text-foreground">Related Assets</h3>
-      <div className="grid grid-cols-2 sm:grid-cols-3 gap-2">
-        {related.map((asset) => (
-          <button
-            key={asset.id}
-            onClick={() => navigate(`/${asset.type}s/${asset.id}`)}
-            className={cn(
-              "flex flex-col gap-1.5 p-3 rounded-lg border text-left transition-all",
-              "border-border bg-muted/30 hover:bg-muted/60 hover:border-border/80"
-            )}
-          >
-            <div className="flex items-center gap-1.5">
-              <span
-                className={cn(
-                  "h-1.5 w-1.5 rounded-full shrink-0",
-                  asset.type === "sprite" ? "bg-cyan-400" : "bg-amber-400"
-                )}
-              />
-              <span className="text-[10px] text-muted-foreground/60 uppercase tracking-wider">
-                {asset.type}
-              </span>
-              <span className="ml-auto text-[10px] text-muted-foreground/40 tabular-nums">
-                {Math.round(asset.score * 100)}%
-              </span>
-            </div>
-            <p className="text-xs font-medium text-foreground/80 truncate">{asset.name}</p>
-            {asset.tags.length > 0 && (
-              <div className="flex flex-wrap gap-1">
-                {asset.tags.slice(0, 3).map((t) => (
-                  <span
-                    key={t}
-                    className="px-1.5 py-0.5 rounded text-[9px] bg-white/5 text-white/40 border border-white/[0.06]"
-                  >
-                    {t}
-                  </span>
-                ))}
-              </div>
-            )}
-          </button>
-        ))}
-      </div>
-    </div>
-  );
-}
 
 // ── Main page ─────────────────────────────────────────────────────────────────
 export function MapDetailPage() {
@@ -339,9 +254,6 @@ export function MapDetailPage() {
 
         {/* Tags */}
         <MapTagsPanel map={map} onSaved={load} />
-
-        {/* Related assets */}
-        <RelatedAssetsSection map={map} />
 
         <Separator />
 

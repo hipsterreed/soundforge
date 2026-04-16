@@ -1,5 +1,5 @@
 import { Elysia, t } from "elysia";
-import { generateMusic, generateSFX, generateVoiceLine } from "../services/elevenlabs";
+import { generateMusic, generateSFX, generateVoiceLine, generateVoicePreviews, saveVoicePreview } from "../services/elevenlabs";
 import {
   getSprites, getSprite, createSprite, updateSprite, deleteSprite,
   addAudioClip, removeAudioClip, setSpriteMusic,
@@ -598,6 +598,89 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
     }
   )
 
+  // ── Voice design: generate previews ─────────────────────────────────────────
+  .post("/sprites/:id/design-voice", async ({ params }) => {
+    const sprite = getSprite(params.id);
+    if (!sprite) return notFound();
+
+    if (!config.groqApiKey) {
+      return new Response(
+        JSON.stringify({ error: "GROQ_API_KEY not configured" }),
+        { status: 500, headers: { "Content-Type": "application/json" } }
+      );
+    }
+
+    // Use Groq to write a voice casting description
+    const groqPrompt = `You are a voice casting director for a video game.
+
+Character name: "${sprite.name}"
+Character description: "${sprite.description || "A game character"}"
+
+Write a single concise paragraph (2-4 sentences) describing how this character should sound. Cover:
+- Age range and gender presentation
+- Voice texture (gruff, silky, raspy, bright, deep, etc.)
+- Accent or speech style if appropriate
+- Overall emotional tone and personality in the voice
+
+Return ONLY the voice description, no labels, no quotes, no extra text.`;
+
+    console.log(`\n🎨 Groq voice description for "${sprite.name}"...`);
+
+    const groqRes = await fetch("https://api.groq.com/openai/v1/chat/completions", {
+      method: "POST",
+      headers: {
+        "Content-Type": "application/json",
+        Authorization: `Bearer ${config.groqApiKey}`,
+      },
+      body: JSON.stringify({
+        model: "llama-3.3-70b-versatile",
+        messages: [{ role: "user", content: groqPrompt }],
+        temperature: 0.85,
+        max_tokens: 150,
+      }),
+      signal: AbortSignal.timeout(20_000),
+    });
+
+    if (!groqRes.ok) {
+      const body = await groqRes.text().catch(() => "unknown");
+      throw new Error(`Groq error ${groqRes.status}: ${body}`);
+    }
+
+    const groqData = await groqRes.json() as { choices: { message: { content: string } }[] };
+    const voiceDescription = (groqData.choices[0]?.message?.content ?? "").trim();
+    console.log(`  ✅ Voice description: "${voiceDescription.slice(0, 60)}..."`);
+
+    // Generate ElevenLabs voice previews
+    const { previews, text } = await generateVoicePreviews(voiceDescription);
+    return { previews, voiceDescription, sampleText: text };
+  })
+
+  // ── Voice design: save a preview as permanent voice ───────────────────────
+  .post(
+    "/sprites/:id/save-voice",
+    async ({ params, body }) => {
+      const sprite = getSprite(params.id);
+      if (!sprite) return notFound();
+
+      const voiceId = await saveVoicePreview(
+        body.generatedVoiceId,
+        sprite.name,
+        body.voiceDescription
+      );
+
+      // Persist voice ID + description on the sprite
+      updateSprite(params.id, { voiceId, voiceDescription: body.voiceDescription });
+      console.log(`✅ Voice saved for "${sprite.name}": ${voiceId}`);
+      return { voiceId, voiceDescription: body.voiceDescription };
+    },
+    {
+      body: t.Object({
+        generatedVoiceId: t.String({ minLength: 1 }),
+        voiceDescription: t.String({ minLength: 1 }),
+      }),
+    }
+  )
+
   // ── TTS voice generation ──────────────────────────────────────────────────────
   .post(
     "/voice",
@@ -605,7 +688,7 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
       try {
         await ensureTmpDir();
         console.log(`\n🎙️ Voice line: "${body.text.slice(0, 60)}"`);
-        const buffer = await generateVoiceLine(body.text);
+        const buffer = await generateVoiceLine(body.text, body.voiceId ?? undefined);
         const id = crypto.randomUUID();
         const path = join(TMP_DIR, `${id}-voice.mp3`);
         await Bun.write(path, buffer);
@@ -622,6 +705,7 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
     {
       body: t.Object({
         text: t.String({ minLength: 1, maxLength: 300 }),
+        voiceId: t.Optional(t.String()),
       }),
     }
   )
@@ -667,10 +751,7 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
       try {
         await ensureTmpDir();
         console.log(`\n🎮 Game Music: "${body.prompt}"`);
-        const buffer = await generateMusic(
-          body.prompt,
-          (body.durationSeconds ?? 60) * 1000
-        );
+        const buffer = await generateMusic(body.prompt, 20_000);
         const id = crypto.randomUUID();
         const path = join(TMP_DIR, `${id}-music.mp3`);
         await Bun.write(path, buffer);
@@ -686,8 +767,7 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
     },
     {
       body: t.Object({
-        prompt: t.String({ minLength: 3, maxLength: 300 }),
-        durationSeconds: t.Optional(t.Number({ minimum: 5, maximum: 120 })),
+        prompt: t.String({ minLength: 3, maxLength: 1000 }),
       }),
     }
   );

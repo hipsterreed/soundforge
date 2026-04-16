@@ -124,7 +124,7 @@ export const composeRoute = new Elysia().post(
 
       // Generate everything in parallel
       const [musicBuffer, ...sfxBuffers] = await Promise.all([
-        generateMusic(composedPrompt, 45000),
+        generateMusic(composedPrompt, 45_000),
         ...sfxPrompts.slice(0, 3).map((p) => generateSFX(p, 18)),
       ]);
 

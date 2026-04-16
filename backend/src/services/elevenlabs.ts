@@ -19,7 +19,7 @@ async function streamToBuffer(
 /** Generate an original music track via the Music API (direct HTTP). */
 export async function generateMusic(
   prompt: string,
-  durationMs = 30000
+  durationMs = 20_000
 ): Promise<Buffer> {
   console.log(`🎵 Composing music: "${prompt.slice(0, 70)}..."`);
 
@@ -73,12 +73,50 @@ export async function generateSFX(
   }
 }
 
+export interface VoicePreview {
+  audio_base_64: string;
+  generated_voice_id: string;
+  media_type: string;
+  duration_secs: number;
+}
+
+/** Generate voice previews from a text description (no TTS permission needed). */
+export async function generateVoicePreviews(
+  voiceDescription: string
+): Promise<{ previews: VoicePreview[]; text: string }> {
+  console.log(`🎨 Designing voice: "${voiceDescription.slice(0, 60)}..."`);
+  const result = await client.textToVoice.createPreviews({
+    voice_description: voiceDescription,
+    auto_generate_text: true,
+  });
+  console.log(`  ✓ Got ${result.previews.length} voice previews`);
+  return { previews: result.previews as VoicePreview[], text: result.text ?? "" };
+}
+
+/** Save a generated voice preview to the ElevenLabs voice library. Returns the permanent voice_id. */
+export async function saveVoicePreview(
+  generatedVoiceId: string,
+  voiceName: string,
+  voiceDescription: string
+): Promise<string> {
+  console.log(`💾 Saving voice "${voiceName}"...`);
+  const voice = await client.textToVoice.createVoiceFromPreview({
+    generated_voice_id: generatedVoiceId,
+    voice_name: voiceName,
+    voice_description: voiceDescription,
+  });
+  console.log(`  ✓ Voice saved: ${voice.voice_id}`);
+  return voice.voice_id;
+}
+
+const DEFAULT_VOICE_ID = "pNInz6obpgDQGcFmaJgB"; // Adam — deep, dramatic game voice
+
 /** Generate a voice line via ElevenLabs TTS. */
-export async function generateVoiceLine(text: string): Promise<Buffer> {
+export async function generateVoiceLine(text: string, voiceId?: string): Promise<Buffer> {
   console.log(`🎙️ Generating voice line: "${text.slice(0, 60)}"`);
-  const voiceId = "pNInz6obpgDQGcFmaJgB"; // Adam — deep, dramatic game voice
+  const resolvedVoiceId = voiceId ?? DEFAULT_VOICE_ID;
   try {
-    const stream = await client.textToSpeech.convert(voiceId, {
+    const stream = await client.textToSpeech.convert(resolvedVoiceId, {
       text,
       model_id: "eleven_flash_v2_5",
       voice_settings: { stability: 0.45, similarity_boost: 0.75 },

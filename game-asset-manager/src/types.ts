@@ -39,6 +39,10 @@ export interface Sprite {
   music: MapMusic | null;
   tags: string[];
   createdAt: string;
+  /** ElevenLabs voice ID for this character (set via Voice Design) */
+  voiceId?: string;
+  /** Human-readable voice description used to generate the voice */
+  voiceDescription?: string;
 }
 
 export interface MapMusic {
