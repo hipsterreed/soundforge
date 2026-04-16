@@ -1,5 +1,6 @@
 import { useEffect, useRef } from "react";
 import { useNavigate } from "react-router-dom";
+import soundforgeLogo from "@/assets/soundforge.png";
 
 // ── Animated canvas background ────────────────────────────────────────────────
 function StarField() {
@@ -438,7 +439,7 @@ export function LandingPage() {
 
       {/* ── GRAPH SHOWCASE ──────────────────────────────────────────────── */}
       <section style={{ padding: "20px 32px 80px" }}>
-        <div style={{ maxWidth: 1100, margin: "0 auto" }}>
+        <div style={{ maxWidth: 1280, margin: "0 auto" }}>
           <div style={{ textAlign: "center", marginBottom: 32 }}>
             <p
               style={{
@@ -467,6 +468,21 @@ export function LandingPage() {
               A physics-simulated force graph that reveals semantic connections between characters,
               maps, and sound effects — powered by turbopuffer vector search.
             </p>
+          </div>
+
+          {/* Company name above browser */}
+          <div style={{ textAlign: "center", marginBottom: 20, display: "flex", alignItems: "center", justifyContent: "center", gap: 16 }}>
+            <img src={soundforgeLogo} alt="Sound Forge" style={{ height: 48, width: "auto" }} />
+            <span
+              style={{
+                fontSize: "clamp(28px, 3.5vw, 48px)",
+                fontWeight: 800,
+                letterSpacing: "-0.03em",
+                color: "#f1f5f9",
+              }}
+            >
+              Sound Forge
+            </span>
           </div>
 
           {/* Browser chrome wrapper */}
@@ -512,7 +528,7 @@ export function LandingPage() {
             </div>
 
             {/* Iframe */}
-            <div style={{ height: 580, background: "#f8fafc", position: "relative" }}>
+            <div style={{ height: 720, background: "#f8fafc", position: "relative" }}>
               <iframe
                 src="/graph"
                 style={{

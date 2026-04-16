@@ -166,13 +166,11 @@ export function GraphPage() {
     if (loading) return;
 
     function loop() {
-      if (tickRef.current >= MAX_TICKS || dragNodeRef.current !== null) {
-        rafRef.current = requestAnimationFrame(loop);
-        return;
+      if (tickRef.current < MAX_TICKS && dragNodeRef.current === null) {
+        tick(nodesRef.current, edgesRef.current, dims.w, dims.h);
+        tickRef.current++;
+        setNodes([...nodesRef.current]);
       }
-      tick(nodesRef.current, edgesRef.current, dims.w, dims.h);
-      tickRef.current++;
-      setNodes([...nodesRef.current]);
       rafRef.current = requestAnimationFrame(loop);
     }
 
