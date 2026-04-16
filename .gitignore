@@ -1,0 +1,9 @@
+node_modules/
+.cache/
+tmp/
+*.env
+!.env.example
+dist/
+.DS_Store
+
+hackathon.md

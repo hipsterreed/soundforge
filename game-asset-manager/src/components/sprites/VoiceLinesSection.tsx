@@ -123,8 +123,6 @@ export function VoiceLinesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
     try {
       const res = await fetch(`/api/game/sprites/${sprite.id}/suggest-voice-lines`, {
         method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({ name: sprite.name, description: sprite.description }),
       });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as { error?: string };

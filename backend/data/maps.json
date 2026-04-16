@@ -1,0 +1,23 @@
+[
+  {
+    "id": "353bf989-cf92-474c-a6ab-06a82c7daa35",
+    "name": "Forest Level",
+    "description": "",
+    "imageUrl": "/audio/img-1776327799295-45ba765a-8f24-42c7-8c9a-f2c9640d9ab7.png",
+    "imagePath": "img-1776327799295-45ba765a-8f24-42c7-8c9a-f2c9640d9ab7.png",
+    "tracks": [],
+    "createdAt": "2026-04-16T08:23:19.306Z"
+  },
+  {
+    "id": "151011fd-be10-4a93-83d0-7faa7684ba8d",
+    "name": "Desert Map",
+    "description": "This sun-drenched biome features a vast expanse of golden sand dotted with hardy cacti and weathered rock formations. A central oasis provides a lush sanctuary of palm trees and vibrant greenery, offering a sharp contrast to the surrounding arid terrain. Along the southern edge, a winding river sustains a line of dense foliage, marking the transition from the dry desert to a fertile riverbank.",
+    "imageUrl": "/audio/img-1776327981468-b8687c94-bcf1-4111-91b8-fb7ca50430a5.png",
+    "imagePath": "img-1776327981468-b8687c94-bcf1-4111-91b8-fb7ca50430a5.png",
+    "tracks": [],
+    "createdAt": "2026-04-16T08:26:21.477Z",
+    "tags": [
+      "desert"
+    ]
+  }
+]
