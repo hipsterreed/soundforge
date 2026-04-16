@@ -1,27 +1,43 @@
-import { apiBase } from "@/lib/db";
+import { ref, uploadBytes, getDownloadURL, deleteObject } from "firebase/storage";
+import { storage } from "@/lib/firebase";
 
-/** Upload an image to the backend. Returns the public URL and storage path. */
+/** Upload an image or audio file to Firebase Storage. Returns the public URL and storage path. */
 export async function uploadImage(
   file: File,
-  _folder: "sprites" | "maps"
+  folder: "sprites" | "maps"
 ): Promise<{ url: string; path: string }> {
-  const formData = new FormData();
-  formData.append("file", file);
+  const ext = file.name.split(".").pop() ?? "bin";
+  const filename = `${folder}/img-${Date.now()}-${crypto.randomUUID()}.${ext}`;
+  const storageRef = ref(storage, `game-assets/${filename}`);
 
-  const res = await fetch(apiBase + "/api/game/upload", {
-    method: "POST",
-    body: formData,
-  });
+  await uploadBytes(storageRef, file, { contentType: file.type });
+  const url = await getDownloadURL(storageRef);
 
-  if (!res.ok) {
-    const body = await res.json().catch(() => ({})) as { error?: string };
-    throw new Error(body.error ?? `Upload failed (${res.status})`);
-  }
-
-  return res.json() as Promise<{ url: string; path: string }>;
+  return { url, path: `game-assets/${filename}` };
 }
 
-/** Images live in the backend tmp dir and are cleaned up server-side. */
-export async function deleteImage(_path: string): Promise<void> {
-  // no-op: backend handles cleanup when the record is deleted
+/** Upload an audio file to Firebase Storage. Returns the public URL and storage path. */
+export async function uploadAudio(
+  file: File,
+  folder: string
+): Promise<{ url: string; path: string }> {
+  const ext = file.name.split(".").pop() ?? "mp3";
+  const filename = `${folder}/${crypto.randomUUID()}.${ext}`;
+  const storageRef = ref(storage, `game-assets/${filename}`);
+
+  await uploadBytes(storageRef, file, { contentType: file.type || "audio/mpeg" });
+  const url = await getDownloadURL(storageRef);
+
+  return { url, path: `game-assets/${filename}` };
+}
+
+/** Delete a file from Firebase Storage by its storage path. */
+export async function deleteImage(path: string): Promise<void> {
+  if (!path) return;
+  try {
+    const storageRef = ref(storage, path);
+    await deleteObject(storageRef);
+  } catch {
+    // File may already be gone — ignore
+  }
 }
