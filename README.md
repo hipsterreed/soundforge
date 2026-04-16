@@ -10,35 +10,22 @@ Describe a scene and Sound Forge semantically searches a library of sonic bluepr
 
 ---
 
-## Apps
-
-| App | Description | Port |
-|-----|-------------|------|
-| `frontend/` | Core experience — type a prompt, get a soundscape | 5173 |
-| `forge-frontend/` | 3D block song builder with Three.js | 5179 |
-| `hatchling/` | Virtual pet that hatches with ElevenLabs-generated sounds | 5174 |
-| `backend/` | Elysia (Bun) API server shared by all frontends | 3001 |
-
----
-
 
 ## Quick Start
 
 ```bash
 # 1. Install dependencies
 cd backend && bun install
-cd ../frontend && bun install
+cd ../game-asset-manager && bun install
 
 # 2. Configure keys
 cp backend/.env.example backend/.env
 # → Fill in ELEVENLABS_API_KEY, TURBOPUFFER_API_KEY, TURBOPUFFER_REGION
 
-# 3. Seed turbopuffer (one-time, ~2–3 min)
-cd backend && bun run seed
 
 # 4. Run
 cd backend && bun run dev      # :3001
-cd frontend && bun run dev     # :5173
+cd game-asset-manager && bun run dev     # :5173
 ```
 
 ---

@@ -1,7 +1,7 @@
 import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { addAudioClip, deleteAudioClip, updateAudioClipTags, getExistingTags, suggestTags } from "@/lib/db";
+import { addAudioClip, deleteAudioClip, updateAudioClipTags, getExistingTags, suggestTags, apiBase } from "@/lib/db";
 import { Play, Pause, Trash2, Loader2, Plus, Zap } from "lucide-react";
 import type { Sprite, AudioClip } from "@/types";
 import { toast } from "sonner";
@@ -141,7 +141,7 @@ export function SoundEffectsSection({ sprite, onUpdate }: { sprite: Sprite; onUp
     setGeneratingLabel(preset.label);
     const prompt = preset.buildPrompt(sprite.name, sprite.description);
     try {
-      const res = await fetch("/api/game/sfx", {
+      const res = await fetch(apiBase + "/api/game/sfx", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, duration: preset.duration }),
@@ -174,7 +174,7 @@ export function SoundEffectsSection({ sprite, onUpdate }: { sprite: Sprite; onUp
       const context = [sprite.name, sprite.description ? sprite.description.slice(0, 100) : null]
         .filter(Boolean).join(" — ");
       const enrichedPrompt = `${context}: ${customPrompt.trim()}`;
-      const res = await fetch("/api/game/sfx", {
+      const res = await fetch(apiBase + "/api/game/sfx", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: enrichedPrompt, duration: customDuration }),

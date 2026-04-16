@@ -1,7 +1,7 @@
 import { useState, useRef } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
-import { setSpriteMusic } from "@/lib/db";
+import { setSpriteMusic, apiBase } from "@/lib/db";
 import { Music2, Play, Pause, RefreshCw, Trash2, Loader2, Sparkles } from "lucide-react";
 import type { Sprite } from "@/types";
 import { toast } from "sonner";
@@ -32,7 +32,7 @@ export function SpriteMusicSection({ sprite, onUpdate }: { sprite: Sprite; onUpd
     setGenerating(true);
     setError(null);
     try {
-      const res = await fetch("/api/game/music", {
+      const res = await fetch(apiBase + "/api/game/music", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, durationSeconds: duration }),

@@ -1,3 +1,5 @@
+import { apiBase } from "@/lib/db";
+
 /** Upload an image to the backend. Returns the public URL and storage path. */
 export async function uploadImage(
   file: File,
@@ -6,7 +8,7 @@ export async function uploadImage(
   const formData = new FormData();
   formData.append("file", file);
 
-  const res = await fetch("/api/game/upload", {
+  const res = await fetch(apiBase + "/api/game/upload", {
     method: "POST",
     body: formData,
   });

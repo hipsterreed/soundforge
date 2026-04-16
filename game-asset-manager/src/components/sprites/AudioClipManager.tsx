@@ -5,7 +5,7 @@ import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
 import { Dialog, DialogContent, DialogHeader, DialogTitle, DialogFooter } from "@/components/ui/dialog";
 import { Select, SelectContent, SelectItem, SelectTrigger, SelectValue } from "@/components/ui/select";
-import { addAudioClip, deleteAudioClip } from "@/lib/db";
+import { addAudioClip, deleteAudioClip, apiBase } from "@/lib/db";
 import { Plus, Trash2, Play, Pause, Loader2, Music2 } from "lucide-react";
 import type { Sprite, AudioClip } from "@/types";
 import { toast } from "sonner";
@@ -77,7 +77,7 @@ export function AudioClipManager({ sprite, onUpdate }: AudioClipManagerProps) {
     setGenerating(true);
     setGenError(null);
     try {
-      const res = await fetch("/api/game/sfx", {
+      const res = await fetch(apiBase + "/api/game/sfx", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, duration }),

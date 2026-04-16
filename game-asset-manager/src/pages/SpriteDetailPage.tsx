@@ -6,7 +6,7 @@ import { SpriteSheetViewer } from "@/components/sprites/SpriteSheetViewer";
 import { VoiceLinesSection } from "@/components/sprites/VoiceLinesSection";
 import { SoundEffectsSection } from "@/components/sprites/SoundEffectsSection";
 import { TagInput } from "@/components/TagInput";
-import { getSprite, updateSprite, deleteSprite, updateTags } from "@/lib/db";
+import { getSprite, updateSprite, deleteSprite, updateTags, apiBase } from "@/lib/db";
 import { deleteImage } from "@/lib/storage";
 import {
   ArrowLeft, Pencil, Check, X, Sparkles, Loader2,
@@ -310,7 +310,7 @@ function CharacterInfoCard({ sprite, onSaved }: { sprite: Sprite; onSaved: () =>
   async function describeWithAI() {
     setDescribing(true);
     try {
-      const res = await fetch(`/api/game/sprites/${sprite.id}/describe`, { method: "POST" });
+      const res = await fetch(apiBase + `/api/game/sprites/${sprite.id}/describe`, { method: "POST" });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(b.error ?? `Error ${res.status}`);

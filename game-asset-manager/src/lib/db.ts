@@ -34,11 +34,13 @@ export interface GraphEdge {
   isParent?: boolean;
 }
 
+export const apiBase = (import.meta.env.VITE_API_BASE as string) || "";
+
 async function api<T>(
   path: string,
   options?: RequestInit
 ): Promise<T> {
-  const res = await fetch(path, options);
+  const res = await fetch(apiBase + path, options);
   if (!res.ok) {
     const body = await res.json().catch(() => ({})) as { error?: string };
     throw new Error(body.error ?? `Request failed (${res.status})`);
@@ -60,7 +62,7 @@ export async function getSprites(): Promise<Sprite[]> {
 }
 
 export async function getSprite(id: string): Promise<Sprite | null> {
-  const res = await fetch(`/api/game/sprites/${id}`);
+  const res = await fetch(apiBase + `/api/game/sprites/${id}`);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Failed to fetch sprite (${res.status})`);
   return res.json() as Promise<Sprite>;
@@ -113,7 +115,7 @@ export async function getMaps(): Promise<GameMap[]> {
 }
 
 export async function getMap(id: string): Promise<GameMap | null> {
-  const res = await fetch(`/api/game/maps/${id}`);
+  const res = await fetch(apiBase + `/api/game/maps/${id}`);
   if (res.status === 404) return null;
   if (!res.ok) throw new Error(`Failed to fetch map (${res.status})`);
   return res.json() as Promise<GameMap>;

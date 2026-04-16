@@ -3,7 +3,7 @@ import { Button } from "@/components/ui/button";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { Badge } from "@/components/ui/badge";
-import { addAudioClip, deleteAudioClip } from "@/lib/db";
+import { addAudioClip, deleteAudioClip, apiBase } from "@/lib/db";
 import {
   Play, Pause, Trash2, Sparkles, Loader2, Plus, ChevronDown, ChevronUp, Zap,
 } from "lucide-react";
@@ -110,7 +110,7 @@ function ManualAddForm({ spriteId, onAdded }: { spriteId: string; onAdded: () =>
     if (!prompt.trim()) { setError("Description is required"); return; }
     setBusy(true); setError(null);
     try {
-      const res = await fetch("/api/game/sfx", {
+      const res = await fetch(apiBase + "/api/game/sfx", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt, duration }),
@@ -187,7 +187,7 @@ export function SoundBytesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
     setSuggestions(null);
     setSuggestionError(null);
     try {
-      const res = await fetch(`/api/game/sprites/${sprite.id}/suggest-sounds`, { method: "POST" });
+      const res = await fetch(apiBase + `/api/game/sprites/${sprite.id}/suggest-sounds`, { method: "POST" });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(b.error ?? `Error ${res.status}`);
@@ -204,7 +204,7 @@ export function SoundBytesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
   async function generateSuggestion(s: Suggestion) {
     setGeneratingLabel(s.label);
     try {
-      const res = await fetch("/api/game/sfx", {
+      const res = await fetch(apiBase + "/api/game/sfx", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ prompt: s.prompt, duration: s.duration }),

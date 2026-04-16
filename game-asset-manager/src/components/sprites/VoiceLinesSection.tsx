@@ -1,6 +1,6 @@
 import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
-import { addVoiceLine, deleteVoiceLine, getExistingTags, suggestTags } from "@/lib/db";
+import { addVoiceLine, deleteVoiceLine, getExistingTags, suggestTags, apiBase } from "@/lib/db";
 import {
   Mic2, Play, Pause, Trash2, Sparkles, Loader2, Plus, X, Wand2, Check, RefreshCw,
 } from "lucide-react";
@@ -201,7 +201,7 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
     setVoicePreviews(null);
     setVoiceDesignError(null);
     try {
-      const res = await fetch(`/api/game/sprites/${sprite.id}/design-voice`, { method: "POST" });
+      const res = await fetch(apiBase + `/api/game/sprites/${sprite.id}/design-voice`, { method: "POST" });
       if (!res.ok) {
         const b = await res.json().catch(() => ({})) as { error?: string };
         throw new Error(b.error ?? `Error ${res.status}`);
@@ -220,7 +220,7 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
   async function handleSelectVoice(preview: VoicePreview) {
     setSavingVoiceId(preview.generated_voice_id);
     try {
-      const res = await fetch(`/api/game/sprites/${sprite.id}/save-voice`, {
+      const res = await fetch(apiBase + `/api/game/sprites/${sprite.id}/save-voice`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({
@@ -247,7 +247,7 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
     setSuggestions(null);
     setSuggestionError(null);
     try {
-      const res = await fetch(`/api/game/sprites/${sprite.id}/suggest-voice-lines`, {
+      const res = await fetch(apiBase + `/api/game/sprites/${sprite.id}/suggest-voice-lines`, {
         method: "POST",
       });
       if (!res.ok) {
@@ -266,7 +266,7 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
   async function generateFromSuggestion(s: AISuggestion) {
     setGeneratingLabel(s.label);
     try {
-      const res = await fetch("/api/game/voice", {
+      const res = await fetch(apiBase + "/api/game/voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: s.text, voiceId: sprite.voiceId }),
@@ -293,7 +293,7 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
     if (!manualText.trim()) { toast.error("Text is required"); return; }
     setManualBusy(true);
     try {
-      const res = await fetch("/api/game/voice", {
+      const res = await fetch(apiBase + "/api/game/voice", {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({ text: manualText.trim(), voiceId: sprite.voiceId }),
