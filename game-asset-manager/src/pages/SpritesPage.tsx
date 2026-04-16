@@ -19,9 +19,15 @@ export function SpritesPage() {
 
   async function load() {
     setLoading(true);
-    const data = await getSprites();
-    setSprites(data);
-    setLoading(false);
+    try {
+      const data = await getSprites();
+      setSprites(data);
+    } catch (err) {
+      console.error("Failed to load sprites:", err);
+      toast.error("Failed to load characters");
+    } finally {
+      setLoading(false);
+    }
   }
 
   useEffect(() => { load(); }, []);
