@@ -5,11 +5,16 @@ import { SpriteDetailPage } from "@/pages/SpriteDetailPage";
 import { MapsPage } from "@/pages/MapsPage";
 import { MapDetailPage } from "@/pages/MapDetailPage";
 import { GraphPage } from "@/pages/GraphPage";
+import { LandingPage } from "@/pages/LandingPage";
 
 export default function App() {
   return (
     <BrowserRouter>
       <Routes>
+        {/* Standalone pages (no sidebar) */}
+        <Route path="/landing" element={<LandingPage />} />
+
+        {/* App shell with sidebar */}
         <Route element={<Layout />}>
           <Route index element={<Navigate to="/sprites" replace />} />
           <Route path="/sprites" element={<SpritesPage />} />

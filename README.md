@@ -1,3 +1,7 @@
+> Built for the **TurboPuffer** × **ElevenLabs** Hackathon
+
+---
+
 # Sound Forge
 
 Type any feeling, memory, or place — Sound Forge turns words into a fully generated audio world.
@@ -17,16 +21,6 @@ Describe a scene and Sound Forge semantically searches a library of sonic bluepr
 
 ---
 
-## Stack
-
-- **ElevenLabs** — Music generation (`/v1/music`) + Sound Effects (`/v1/sound-generation`)
-- **turbopuffer** — Vector database for semantic search across 70+ sonic blueprints
-- **HuggingFace Transformers.js** — Local embeddings (`all-MiniLM-L6-v2`, no extra API key)
-- **Bun + Elysia** — Backend runtime and HTTP framework
-- **Vite + React + TypeScript** — All frontends
-- **Three.js / @react-three/fiber** — 3D visuals in the block builder
-
----
 
 ## Quick Start
 
