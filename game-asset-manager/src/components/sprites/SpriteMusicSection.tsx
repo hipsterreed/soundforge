@@ -42,7 +42,7 @@ export function SpriteMusicSection({ sprite, onUpdate }: { sprite: Sprite; onUpd
         throw new Error(b.error ?? `Error ${res.status}`);
       }
       const { url } = await res.json() as { url: string };
-      await setSpriteMusic(sprite.id, { url, prompt, createdAt: new Date().toISOString() });
+      await setSpriteMusic(sprite.id, { url, prompt });
       toast.success("Music generated!");
       setPlaying(false);
       setShowForm(false);

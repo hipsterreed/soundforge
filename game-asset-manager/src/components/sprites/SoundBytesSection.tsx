@@ -120,7 +120,7 @@ function ManualAddForm({ spriteId, onAdded }: { spriteId: string; onAdded: () =>
         throw new Error(b.error ?? `Error ${res.status}`);
       }
       const { url } = await res.json() as { url: string };
-      await addAudioClip(spriteId, { label: label.trim(), prompt, url, duration });
+      await addAudioClip(spriteId, { label: label.trim(), prompt, url, duration, tags: [] });
       toast.success(`"${label}" added`);
       setLabel(""); setPrompt(""); setDuration(3); setOpen(false);
       onAdded();
@@ -214,7 +214,7 @@ export function SoundBytesSection({ sprite, onUpdate }: { sprite: Sprite; onUpda
         throw new Error(b.error ?? `Error ${res.status}`);
       }
       const { url } = await res.json() as { url: string };
-      await addAudioClip(sprite.id, { label: s.label, prompt: s.prompt, url, duration: s.duration });
+      await addAudioClip(sprite.id, { label: s.label, prompt: s.prompt, url, duration: s.duration, tags: [] });
       toast.success(`"${s.label}" generated`);
       onUpdate();
     } catch (err: unknown) {

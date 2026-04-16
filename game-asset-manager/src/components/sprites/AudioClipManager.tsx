@@ -87,7 +87,7 @@ export function AudioClipManager({ sprite, onUpdate }: AudioClipManagerProps) {
         throw new Error(b?.error ?? `Error ${res.status}`);
       }
       const { url } = await res.json() as { url: string };
-      await addAudioClip(sprite.id, { label, prompt, url, duration });
+      await addAudioClip(sprite.id, { label, prompt, url, duration, tags: [] });
       toast.success(`"${label}" clip added`);
       onUpdate();
       setShowAdd(false);
