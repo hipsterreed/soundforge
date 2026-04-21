@@ -1,9 +1,12 @@
 node_modules/
 .cache/
 tmp/
+.env
+.env.*
 *.env
 !.env.example
 dist/
 .DS_Store
+.plan/
 
 hackathon.md
