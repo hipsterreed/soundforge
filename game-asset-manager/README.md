@@ -1,4 +1,8 @@
-# React + TypeScript + Vite
+# SoundForge — Game Asset Manager
+
+> Note: New audio generation is currently paused — the deployed app is in showcase mode. Existing characters, sounds, voices, and music remain fully playable.
+
+Built with React + TypeScript + Vite.
 
 This template provides a minimal setup to get React working in Vite with HMR and some ESLint rules.
 
