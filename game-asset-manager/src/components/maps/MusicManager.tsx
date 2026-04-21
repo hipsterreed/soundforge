@@ -4,10 +4,11 @@ import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addMapTrack, removeMapTrack, apiBase } from "@/lib/db";
 import {
-  Music, Play, Pause, Trash2, Loader2, Plus, ChevronDown, ChevronUp,
+  Music, Play, Pause, Trash2, Loader2, Plus, ChevronDown, ChevronUp, Lock,
 } from "lucide-react";
 import type { GameMap, MapTrack } from "@/types";
 import { toast } from "sonner";
+import { GENERATION_DISABLED, GENERATION_DISABLED_MESSAGE } from "@/lib/featureFlags";
 
 interface TrackRowProps {
   track: MapTrack;
@@ -143,11 +144,14 @@ export function MusicManager({ map, onUpdate }: MusicManagerProps) {
           size="sm"
           className="h-7 gap-1.5 text-xs"
           onClick={() => setShowForm((v) => !v)}
-          disabled={generating}
+          disabled={generating || GENERATION_DISABLED}
+          title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
         >
-          {showForm
-            ? <><ChevronUp className="h-3 w-3" />Hide</>
-            : <><Plus className="h-3 w-3" />Generate</>}
+          {GENERATION_DISABLED
+            ? <><Lock className="h-3 w-3" />Generate</>
+            : showForm
+              ? <><ChevronUp className="h-3 w-3" />Hide</>
+              : <><Plus className="h-3 w-3" />Generate</>}
         </Button>
       </div>
 
@@ -187,12 +191,15 @@ export function MusicManager({ map, onUpdate }: MusicManagerProps) {
           <Button
             size="sm"
             onClick={handleGenerate}
-            disabled={generating}
+            disabled={generating || GENERATION_DISABLED}
+            title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
             className="w-full"
           >
-            {generating
-              ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Generating…</>
-              : <><Music className="h-4 w-4 mr-2" />Generate Track</>}
+            {GENERATION_DISABLED
+              ? <><Lock className="h-4 w-4 mr-2" />Generate Track</>
+              : generating
+                ? <><Loader2 className="h-4 w-4 mr-2 animate-spin" />Generating…</>
+                : <><Music className="h-4 w-4 mr-2" />Generate Track</>}
           </Button>
         </div>
       )}

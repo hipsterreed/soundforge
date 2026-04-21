@@ -2,11 +2,12 @@ import { useState, useRef, useEffect } from "react";
 import { Input } from "@/components/ui/input";
 import { addVoiceLine, deleteVoiceLine, getExistingTags, suggestTags, apiBase } from "@/lib/db";
 import {
-  Mic2, Play, Pause, Trash2, Sparkles, Loader2, Plus, X, Wand2, Check, RefreshCw,
+  Mic2, Play, Pause, Trash2, Sparkles, Loader2, Plus, X, Wand2, Check, RefreshCw, Lock,
 } from "lucide-react";
 import type { Sprite, VoiceLine } from "@/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
+import { GENERATION_DISABLED, GENERATION_DISABLED_MESSAGE } from "@/lib/featureFlags";
 
 interface AISuggestion {
   label: string;
@@ -123,10 +124,11 @@ function VoicePreviewCard({
       </div>
       <button
         onClick={() => onSelect(preview)}
-        disabled={saving}
-        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 hover:border-violet-500/30 text-violet-700 text-xs font-semibold transition-all disabled:opacity-40 shrink-0"
+        disabled={saving || GENERATION_DISABLED}
+        title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+        className="flex items-center gap-1.5 px-3 py-1.5 rounded-lg bg-violet-500/10 hover:bg-violet-500/20 border border-violet-500/20 hover:border-violet-500/30 text-violet-700 text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed shrink-0"
       >
-        {saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
+        {GENERATION_DISABLED ? <Lock className="h-3 w-3" /> : saving ? <Loader2 className="h-3 w-3 animate-spin" /> : <Check className="h-3 w-3" />}
         {saving ? "Saving…" : "Use this voice"}
       </button>
     </div>
@@ -155,10 +157,11 @@ function SuggestionCard({
       <p className="text-sm text-foreground/60 leading-snug italic">&ldquo;{suggestion.text}&rdquo;</p>
       <button
         onClick={() => onGenerate(suggestion)}
-        disabled={generating}
-        className="w-full py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/20 hover:border-emerald-500/30 text-emerald-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40"
+        disabled={generating || GENERATION_DISABLED}
+        title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+        className="w-full py-2 rounded-lg bg-emerald-500/10 hover:bg-emerald-500/15 border border-emerald-500/20 hover:border-emerald-500/30 text-emerald-700 text-xs font-semibold flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
       >
-        <Mic2 className="h-3 w-3" />
+        {GENERATION_DISABLED ? <Lock className="h-3 w-3" /> : <Mic2 className="h-3 w-3" />}
         {generating ? "Generating…" : "Generate Voice"}
       </button>
     </div>
@@ -395,10 +398,11 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
             )}
             <button
               onClick={handleDesignVoice}
-              disabled={!hasDescription}
+              disabled={!hasDescription || GENERATION_DISABLED}
+              title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
               className="flex items-center gap-2 px-5 py-2.5 rounded-lg bg-violet-500 hover:bg-violet-600 text-white text-sm font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed shadow-sm"
             >
-              <Wand2 className="h-4 w-4" />
+              {GENERATION_DISABLED ? <Lock className="h-4 w-4" /> : <Wand2 className="h-4 w-4" />}
               Design Character Voice
             </button>
           </div>
@@ -451,11 +455,13 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
       <div className="flex items-center gap-3">
         <button
           onClick={fetchSuggestions}
-          disabled={loadingSuggestions || !hasDescription}
-          title={!hasDescription ? "Add a description first" : "Generate AI voice line ideas"}
+          disabled={loadingSuggestions || !hasDescription || GENERATION_DISABLED}
+          title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : !hasDescription ? "Add a description first" : "Generate AI voice line ideas"}
           className="flex items-center gap-2 px-4 py-2 rounded-lg bg-violet-50 hover:bg-violet-100 border border-violet-200 text-violet-700 text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          {loadingSuggestions ? (
+          {GENERATION_DISABLED ? (
+            <><Lock className="h-3.5 w-3.5" />AI Suggest</>
+          ) : loadingSuggestions ? (
             <><Loader2 className="h-3.5 w-3.5 animate-spin" />Thinking…</>
           ) : (
             <><Sparkles className="h-3.5 w-3.5" />AI Suggest</>
@@ -463,9 +469,12 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
         </button>
         <button
           onClick={() => setShowManual((v) => !v)}
-          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted hover:bg-muted/80 border border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-all"
+          disabled={GENERATION_DISABLED}
+          title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+          className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted hover:bg-muted/80 border border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-all disabled:opacity-30 disabled:cursor-not-allowed"
         >
-          <Plus className="h-3.5 w-3.5" />Write custom
+          {GENERATION_DISABLED ? <Lock className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+          Write custom
         </button>
       </div>
 
@@ -503,10 +512,13 @@ export function VoiceLinesSection({ sprite, onUpdate, designTrigger = 0 }: { spr
             </button>
             <button
               onClick={handleManualGenerate}
-              disabled={manualBusy}
-              className="flex-1 py-1.5 rounded-md text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex items-center justify-center gap-1.5 transition-all disabled:opacity-40"
+              disabled={manualBusy || GENERATION_DISABLED}
+              title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+              className="flex-1 py-1.5 rounded-md text-xs font-semibold text-emerald-700 bg-emerald-50 hover:bg-emerald-100 border border-emerald-200 flex items-center justify-center gap-1.5 transition-all disabled:opacity-40 disabled:cursor-not-allowed"
             >
-              {manualBusy ? (
+              {GENERATION_DISABLED ? (
+                <><Lock className="h-3.5 w-3.5" />Generate Voice</>
+              ) : manualBusy ? (
                 <><Loader2 className="h-3.5 w-3.5 animate-spin" />Generating…</>
               ) : (
                 <><Mic2 className="h-3.5 w-3.5" />Generate Voice</>

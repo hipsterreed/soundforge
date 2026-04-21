@@ -67,9 +67,20 @@ function buildMusicPrompt(
   return parts.join(" ").replace(/\s+/g, " ").trim();
 }
 
+const GENERATION_DISABLED = process.env.GENERATION_ENABLED !== "true";
+
 export const composeRoute = new Elysia().post(
   "/api/compose",
   async ({ body }) => {
+    if (GENERATION_DISABLED) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "New audio generation is disabled while this project is in showcase mode.",
+        }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
+      );
+    }
     try {
       await ensureTmpDir();
       const { blocks } = body as { blocks: BlockIn[] };

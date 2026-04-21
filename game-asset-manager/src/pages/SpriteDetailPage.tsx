@@ -10,11 +10,12 @@ import { getSprite, updateSprite, deleteSprite, updateTags, apiBase } from "@/li
 import { deleteImage } from "@/lib/storage";
 import {
   ArrowLeft, Pencil, Check, X, Sparkles, Loader2,
-  Mic2, Zap, Trash2, RefreshCw,
+  Mic2, Zap, Trash2, RefreshCw, Lock,
 } from "lucide-react";
 import { toast } from "sonner";
 import type { Sprite } from "@/types";
 import { cn } from "@/lib/utils";
+import { GENERATION_DISABLED, GENERATION_DISABLED_MESSAGE } from "@/lib/featureFlags";
 
 // ── Shared label ──────────────────────────────────────────────────────────────
 function PanelLabel({ children }: { children: React.ReactNode }) {
@@ -347,12 +348,15 @@ function CharacterInfoCard({ sprite, onSaved }: { sprite: Sprite; onSaved: () =>
         </p>
         <button
           onClick={describeWithAI}
-          disabled={describing}
-          className="flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-violet-600 transition-colors uppercase tracking-wide disabled:opacity-40"
+          disabled={describing || GENERATION_DISABLED}
+          title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+          className="flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-violet-600 transition-colors uppercase tracking-wide disabled:opacity-40 disabled:cursor-not-allowed"
         >
-          {describing
-            ? <Loader2 className="h-2.5 w-2.5 animate-spin" />
-            : <Sparkles className="h-2.5 w-2.5" />}
+          {GENERATION_DISABLED
+            ? <Lock className="h-2.5 w-2.5" />
+            : describing
+              ? <Loader2 className="h-2.5 w-2.5 animate-spin" />
+              : <Sparkles className="h-2.5 w-2.5" />}
           AI Write
         </button>
       </div>
@@ -618,9 +622,12 @@ export function SpriteDetailPage() {
                 {sprite.voiceId && (
                   <button
                     onClick={() => setVoiceDesignTrigger((n) => n + 1)}
-                    className="ml-auto flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-violet-600 transition-colors uppercase tracking-wide"
+                    disabled={GENERATION_DISABLED}
+                    title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+                    className="ml-auto flex items-center gap-1 text-[10px] text-muted-foreground/50 hover:text-violet-600 transition-colors uppercase tracking-wide disabled:opacity-40 disabled:cursor-not-allowed"
                   >
-                    <RefreshCw className="h-2.5 w-2.5" />Change voice
+                    {GENERATION_DISABLED ? <Lock className="h-2.5 w-2.5" /> : <RefreshCw className="h-2.5 w-2.5" />}
+                    Change voice
                   </button>
                 )}
               </div>

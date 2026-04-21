@@ -2,11 +2,12 @@ import { useState, useRef, useEffect, useCallback } from "react";
 import { Input } from "@/components/ui/input";
 import { Label } from "@/components/ui/label";
 import { addAudioClip, deleteAudioClip, updateAudioClipTags, getExistingTags, suggestTags, apiBase } from "@/lib/db";
-import { Play, Pause, Trash2, Loader2, Plus, Zap } from "lucide-react";
+import { Play, Pause, Trash2, Loader2, Plus, Zap, Lock } from "lucide-react";
 import type { Sprite, AudioClip } from "@/types";
 import { toast } from "sonner";
 import { cn } from "@/lib/utils";
 import { TagInput } from "@/components/TagInput";
+import { GENERATION_DISABLED, GENERATION_DISABLED_MESSAGE } from "@/lib/featureFlags";
 
 const PRESETS = [
   {
@@ -220,25 +221,34 @@ export function SoundEffectsSection({ sprite, onUpdate }: { sprite: Sprite; onUp
               <button
                 key={preset.label}
                 onClick={() => generatePreset(preset)}
-                disabled={isGenerating}
+                disabled={isGenerating || GENERATION_DISABLED}
+                title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
                 className={cn(
                   "flex flex-col items-center gap-2 py-4 rounded-xl border transition-all",
                   "bg-emerald-50/50 border-emerald-200 text-emerald-700",
                   "hover:bg-emerald-50 hover:border-emerald-300 hover:text-emerald-800",
                   busy && "bg-emerald-100 border-emerald-300 text-emerald-800",
                   isGenerating && !busy && "opacity-30",
+                  GENERATION_DISABLED && "opacity-40 cursor-not-allowed hover:bg-emerald-50/50 hover:border-emerald-200 hover:text-emerald-700",
                   "disabled:cursor-not-allowed"
                 )}
               >
-                {busy
-                  ? <Loader2 className="h-4 w-4 animate-spin" />
-                  : <Zap className="h-4 w-4" />
-                }
+                {GENERATION_DISABLED
+                  ? <Lock className="h-4 w-4" />
+                  : busy
+                    ? <Loader2 className="h-4 w-4 animate-spin" />
+                    : <Zap className="h-4 w-4" />}
                 <span className="text-xs font-semibold">{busy ? "…" : preset.label}</span>
               </button>
             );
           })}
         </div>
+        {GENERATION_DISABLED && (
+          <p className="text-[11px] text-muted-foreground mt-2.5 flex items-center gap-1.5">
+            <Lock className="h-3 w-3" />
+            {GENERATION_DISABLED_MESSAGE}
+          </p>
+        )}
       </div>
 
       {/* Existing clips */}
@@ -265,10 +275,12 @@ export function SoundEffectsSection({ sprite, onUpdate }: { sprite: Sprite; onUp
         {!showCustom ? (
           <button
             onClick={() => setShowCustom(true)}
-            disabled={isGenerating}
-            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted hover:bg-muted/80 border border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-all"
+            disabled={isGenerating || GENERATION_DISABLED}
+            title={GENERATION_DISABLED ? GENERATION_DISABLED_MESSAGE : undefined}
+            className="flex items-center gap-2 px-4 py-2 rounded-lg bg-muted hover:bg-muted/80 border border-border text-muted-foreground hover:text-foreground text-xs font-semibold transition-all disabled:opacity-40 disabled:cursor-not-allowed"
           >
-            <Plus className="h-3.5 w-3.5" />Custom sound effect
+            {GENERATION_DISABLED ? <Lock className="h-3.5 w-3.5" /> : <Plus className="h-3.5 w-3.5" />}
+            Custom sound effect
           </button>
         ) : (
           <div className="rounded-xl border border-border bg-muted/20 p-4 space-y-3">

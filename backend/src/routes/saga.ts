@@ -12,9 +12,20 @@ async function ensureTmpDir() {
   if (!existsSync(TMP_DIR)) await mkdir(TMP_DIR, { recursive: true });
 }
 
+const GENERATION_DISABLED = process.env.GENERATION_ENABLED !== "true";
+
 export const sagaRoute = new Elysia().post(
   "/api/saga",
   async ({ body }) => {
+    if (GENERATION_DISABLED) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "New audio generation is disabled while this project is in showcase mode.",
+        }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
+      );
+    }
     try {
       return await handleSaga(body.prompt, body.campaignType ?? null);
     } catch (err: unknown) {

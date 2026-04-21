@@ -18,9 +18,20 @@ async function ensureTmpDir() {
   }
 }
 
+const GENERATION_DISABLED = process.env.GENERATION_ENABLED !== "true";
+
 export const generateRoute = new Elysia().post(
   "/api/generate",
   async ({ body }) => {
+    if (GENERATION_DISABLED) {
+      return new Response(
+        JSON.stringify({
+          error:
+            "New audio generation is disabled while this project is in showcase mode.",
+        }),
+        { status: 503, headers: { "Content-Type": "application/json" } }
+      );
+    }
     console.log("📥 Route hit:", body.prompt);
     try {
       return await handleGenerate(body.prompt);

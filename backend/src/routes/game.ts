@@ -26,6 +26,19 @@ const notFound = (msg = "Not found") =>
     headers: { "Content-Type": "application/json" },
   });
 
+// Showcase-mode kill switch: disables all AI generation endpoints.
+// Set GENERATION_ENABLED=true in env to re-enable.
+const GENERATION_DISABLED = process.env.GENERATION_ENABLED !== "true";
+
+const generationDisabledResponse = () =>
+  new Response(
+    JSON.stringify({
+      error:
+        "New audio generation is disabled while this project is in showcase mode. All previously generated assets are still available.",
+    }),
+    { status: 503, headers: { "Content-Type": "application/json" } }
+  );
+
 export const gameRoute = new Elysia({ prefix: "/api/game" })
 
   // ── File upload ─────────────────────────────────────────────────────────────
@@ -162,6 +175,7 @@ export const gameRoute = new Elysia({ prefix: "/api/game" })
 
   // ── AI sound suggestions ─────────────────────────────────────────────────────
   .post("/sprites/:id/suggest-sounds", async ({ params }) => {
+    if (GENERATION_DISABLED) return generationDisabledResponse();
     const sprite = getSprite(params.id);
     if (!sprite) return notFound();
 
@@ -414,6 +428,7 @@ Rules:
 
   // ── AI: suggest voice lines ──────────────────────────────────────────────────
   .post("/sprites/:id/suggest-voice-lines", async ({ params }) => {
+    if (GENERATION_DISABLED) return generationDisabledResponse();
     const sprite = getSprite(params.id);
     if (!sprite) return notFound();
 
@@ -482,6 +497,7 @@ Rules:
 
   // ── AI: generate description ─────────────────────────────────────────────────
   .post("/sprites/:id/describe", async ({ params }) => {
+    if (GENERATION_DISABLED) return generationDisabledResponse();
     const sprite = getSprite(params.id);
     if (!sprite) return notFound();
 
@@ -536,6 +552,7 @@ Return ONLY the description text, no labels, no quotes, no extra text.`;
     "/suggest-tags",
     async ({ body }) => {
       try {
+        if (GENERATION_DISABLED) return { tags: [] };
         if (!config.groqApiKey) return { tags: [] };
 
         const { label, prompt, spriteName, spriteDescription } = body;
@@ -600,6 +617,7 @@ Return ONLY a JSON array, no markdown: ["tag1", "tag2", "tag3"]`;
 
   // ── Voice design: generate previews ─────────────────────────────────────────
   .post("/sprites/:id/design-voice", async ({ params }) => {
+    if (GENERATION_DISABLED) return generationDisabledResponse();
     const sprite = getSprite(params.id);
     if (!sprite) return notFound();
 
@@ -660,6 +678,7 @@ Return ONLY the voice description, no labels, no quotes, no extra text.`;
   .post(
     "/sprites/:id/save-voice",
     async ({ params, body }) => {
+      if (GENERATION_DISABLED) return generationDisabledResponse();
       const sprite = getSprite(params.id);
       if (!sprite) return notFound();
 
@@ -686,6 +705,7 @@ Return ONLY the voice description, no labels, no quotes, no extra text.`;
   .post(
     "/voice",
     async ({ body }) => {
+      if (GENERATION_DISABLED) return generationDisabledResponse();
       try {
         await ensureTmpDir();
         console.log(`\n🎙️ Voice line: "${body.text.slice(0, 60)}"`);
@@ -715,6 +735,7 @@ Return ONLY the voice description, no labels, no quotes, no extra text.`;
   .post(
     "/sfx",
     async ({ body }) => {
+      if (GENERATION_DISABLED) return generationDisabledResponse();
       try {
         await ensureTmpDir();
         console.log(`\n🎮 Game SFX: "${body.prompt}"`);
@@ -749,6 +770,7 @@ Return ONLY the voice description, no labels, no quotes, no extra text.`;
   .post(
     "/music",
     async ({ body }) => {
+      if (GENERATION_DISABLED) return generationDisabledResponse();
       try {
         await ensureTmpDir();
         console.log(`\n🎮 Game Music: "${body.prompt}"`);
